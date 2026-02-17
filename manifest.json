@@ -1,0 +1,16 @@
+{
+    "name": "Ramadan Planner Premium",
+    "short_name": "RamadanPlan",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#fefcf2",
+    "theme_color": "#d4af37",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "icon.svg",
+            "sizes": "192x192 512x512",
+            "type": "image/svg+xml"
+        }
+    ]
+}

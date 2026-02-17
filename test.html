@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+</head>
+
+<body>
+    <h1>Test - If you see this, HTML is working</h1>
+    <div id="test-div">Initial content</div>
+
+    <script>
+        console.log("Script is loading...");
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOMContentLoaded fired");
+            const testDiv = document.getElementById('test-div');
+            if (testDiv) {
+                testDiv.innerHTML = "JavaScript is working!";
+                console.log("Updated test div");
+            } else {
+                console.error("Could not find test div");
+            }
+        });
+        console.log("Script loaded");
+    </script>
+</body>
+
+</html>
