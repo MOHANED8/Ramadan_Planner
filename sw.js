@@ -1,9 +1,8 @@
-const CACHE_NAME = 'ramadan-planner-v9';
+const CACHE_NAME = 'ramadan-planner-v10';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
     './style.css',
-    './style-3d.css',
     './certificate.css',
     './js/app.js',
     './js/translations.js',
