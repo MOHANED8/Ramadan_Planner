@@ -64,29 +64,7 @@ body {
     transition: opacity 0.3s ease;
 }
 
-/* MANUAL AD SLOTS: RESERVED SPACE FOR STABILITY */
-.ad-slot {
-    width: 100%;
-    min-height: 280px;
-    /* Standard MREC Height + Padding */
-    margin: 20px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(212, 175, 55, 0.05);
-    /* Subtle gold tint placeholder */
-    border-radius: 10px;
-    contain: content;
-    /* Isolate layout reflows here */
-}
-
-.ad-placeholder {
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    border: 1px dashed var(--gold-secondary);
-    padding: 10px;
-    border-radius: 5px;
-}
+/* Ad Styles Removed */
 
 /* Professional Container */
 .container {
