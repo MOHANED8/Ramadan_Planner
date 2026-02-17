@@ -337,21 +337,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (entry.isIntersecting) {
                     const placeholder = entry.target;
                     const day = placeholder.dataset.day;
-                    const html = generateDayHTML(day);
 
-                    // Replace placeholder with actual content
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = html;
-                    const newContent = tempDiv.firstElementChild;
+                    // Sync with screen refresh rate to prevent tremors
+                    requestAnimationFrame(() => {
+                        const html = generateDayHTML(day);
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+                        const newContent = tempDiv.firstElementChild;
 
-                    placeholder.replaceWith(newContent);
+                        if (placeholder.parentNode) {
+                            placeholder.replaceWith(newContent);
+                            attachCheckboxListeners();
+                        }
+                    });
+
                     obs.unobserve(placeholder);
-
-                    // Re-attach listeners just for this new card
-                    attachCheckboxListeners();
                 }
             });
-        }, { rootMargin: "200px" }); // Pre-load 200px before viewport
+        }, { rootMargin: "400px" }); // Pre-load 400px before viewport for smoother transition
 
         // Append placeholders
         for (let day = 1; day <= 30; day++) {

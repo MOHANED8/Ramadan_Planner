@@ -79,10 +79,15 @@ body {
     /* App Shell: Handle scrolling here */
     overflow-y: auto;
     overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    /* Prevent chain scrolling to body */
     -webkit-overflow-scrolling: touch;
     padding: 10px;
     position: relative;
     z-index: 1;
+    /* GPU Promotion to eliminate jitter */
+    transform: translate3d(0, 0, 0);
+    will-change: scroll-position;
 }
 
 
@@ -379,6 +384,8 @@ h3 {
     /* UI-005: Remove animation on mobile */
     min-height: 200px;
     padding-top: 60px;
+    /* GPU Promotion */
+    transform: translate3d(0, 0, 0);
 }
 
 /* Desktop: Add animation only if user allows */
