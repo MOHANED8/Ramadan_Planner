@@ -2,13 +2,13 @@
 import { translations } from './translations.js';
 import { workouts, workouts_en } from './workouts.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+// --- 0. Global Storage Keys (Accessible immediately) ---
+const STORAGE_KEY_LANG = 'ramadan_planner_lang';
+const STORAGE_KEY_NAME = 'ramadan_planner_name';
+const STORAGE_KEY_PROGRESS = 'ramadan_daily_progress';
+const CERT_STORAGE_KEY = 'certificates_awarded';
 
-    // --- 0. Storage Keys (Define early to avoid ReferenceErrors) ---
-    const STORAGE_KEY_LANG = 'ramadan_planner_lang';
-    const STORAGE_KEY_NAME = 'ramadan_planner_name';
-    const STORAGE_KEY_PROGRESS = 'ramadan_daily_progress';
-    const CERT_STORAGE_KEY = 'certificates_awarded';
+document.addEventListener('DOMContentLoaded', () => {
 
     // --- 0.5. Enterprise Sync Manager (Core Data Layer) ---
     const SyncManager = {
