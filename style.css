@@ -21,10 +21,12 @@
 }
 
 html {
-    overflow-x: hidden;
+    overflow-x: hidden !important;
     overflow-y: auto;
     /* Let browser handle vertical scroll naturally */
     width: 100%;
+    max-width: 100%;
+    /* Critical: Prevent horizontal expansion */
     overscroll-behavior: none;
     /* Prevent rubber-banding/bounce globally */
     -webkit-text-size-adjust: 100%;
@@ -41,7 +43,10 @@ body {
     padding: 20px;
     direction: rtl;
     min-height: 100svh;
+    min-height: 100svh;
     width: 100%;
+    max-width: 100%;
+    /* Critical: Prevent horizontal expansion */
     position: relative;
     /* Removed overflow-y: scroll to prevent dual-scroll containers */
     -webkit-font-smoothing: antialiased;
