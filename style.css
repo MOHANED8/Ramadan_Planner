@@ -614,9 +614,11 @@ input#user-name::placeholder {
         width: 100%;
     }
 
+    /* Containment for Print is tricky, better to let browser handle page breaks */
     .table-gold {
         box-shadow: none;
         border: 2px solid #ccc;
+        break-inside: avoid;
     }
 
     .daily-card {
@@ -745,7 +747,8 @@ section:nth-child(4) {
         margin: 10px auto;
         padding: 15px;
         overflow: hidden;
-        /* Contains children */
+        /* STRICT CONTAINMENT: The magic fix for mobile scroll performance */
+        contain: content;
     }
 
     .premium-header h1 {
@@ -780,8 +783,17 @@ section:nth-child(4) {
             -webkit-backdrop-filter: none !important;
             box-shadow: none !important;
             transform: none !important;
+            transform: none !important;
             will-change: auto !important;
             /* Release GPU memory */
+            /* Ensure containment on heavy children too */
+            contain: content;
+        }
+
+        /* Strict Containment for Cards */
+        .daily-card {
+            contain: content;
+            will-change: auto;
         }
 
         /* Input zoom fix */
