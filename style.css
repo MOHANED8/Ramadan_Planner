@@ -20,6 +20,13 @@
     padding: 0;
 }
 
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    /* Phase 16: Hard enforcement to prevent overflow jitter */
+}
+
 html {
     overflow-x: hidden !important;
     overflow-y: auto;

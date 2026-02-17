@@ -813,7 +813,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         draw();
-        setTimeout(() => { canvas.style.display = 'none'; }, 5000);
+
+        // Phase 16: Hard cleanup of rendering canvas to prevent idle GPU usage
+        setTimeout(() => {
+            canvas.style.display = 'none';
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the buffer
+        }, 5000);
     }
 
     // Download certificate
