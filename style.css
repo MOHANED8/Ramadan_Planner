@@ -37,12 +37,21 @@ body {
     /* Helper for mobile viewports */
     scroll-behavior: smooth;
     overflow-x: hidden;
+    overflow-y: scroll;
+    /* Force scrollbar to prevent jump */
     /* Critical for scroll stability */
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
     overscroll-behavior-x: none;
     width: 100%;
     position: relative;
+}
+
+/* Reserve space for dynamic status text to prevent CLS */
+#location-status {
+    min-height: 1.5em;
+    /* Reserve one line of text height */
+    transition: opacity 0.3s ease;
 }
 
 .container {

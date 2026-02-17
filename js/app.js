@@ -311,11 +311,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>`;
             });
             allDaysHTML += `</tbody></table></div></div>`;
+            allDaysHTML += `</tbody></table></div></div>`;
         }
-        daysContainer.innerHTML = allDaysHTML;
 
-        // Re-attach listeners to new checkboxes
-        attachCheckboxListeners();
+        // Performance: Render in next frame to avoid blocking
+        requestAnimationFrame(() => {
+            daysContainer.innerHTML = allDaysHTML;
+            // Re-attach listeners to new checkboxes
+            attachCheckboxListeners();
+        });
     }
 
     function attachCheckboxListeners() {
