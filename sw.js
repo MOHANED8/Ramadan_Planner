@@ -1,13 +1,15 @@
-const CACHE_NAME = 'ramadan-planner-v8';
+const CACHE_NAME = 'ramadan-planner-v9';
 const ASSETS_TO_CACHE = [
-    '/',
-    '/index.html',
-    '/style.css',
-    '/style-3d.css',
-    '/certificate.css',
-    '/script.js',
-    '/manifest.json',
-    '/icon.svg'
+    './',
+    './index.html',
+    './style.css',
+    './style-3d.css',
+    './certificate.css',
+    './js/app.js',
+    './js/translations.js',
+    './js/workouts.js',
+    './manifest.json',
+    './icon.svg'
 ];
 
 // Install Event - Cache Files
