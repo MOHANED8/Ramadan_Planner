@@ -36,25 +36,26 @@ html {
 body {
     font-family: 'Cairo', 'Amiri', 'Traditional Arabic', sans-serif;
     background-color: var(--cream-bg);
-    /* Mobile Background: Simple Gradient by default for performance */
     background: linear-gradient(135deg, #fefcf2 0%, #f9f4e0 100%);
     color: var(--text-dark);
     line-height: 1.6;
-    padding: 20px;
+    padding: 0;
+    /* UI-003: Remove padding on mobile */
     direction: rtl;
     min-height: 100vh;
-    /* Reverted to vh for maximum stability */
     width: 100%;
     max-width: 100%;
-    /* Critical: Prevent horizontal expansion */
     position: relative;
-    /* TOUCH LOCKDOWN: Kill horizontal jitter */
     touch-action: pan-y;
     -webkit-overflow-scrolling: touch;
-
-    /* Removed overflow-y: scroll to prevent dual-scroll containers */
     -webkit-font-smoothing: antialiased;
-    /* Crisp text rendering */
+}
+
+/* Desktop: Restore padding */
+@media (min-width: 768px) {
+    body {
+        padding: 20px;
+    }
 }
 
 /* Reserve space for dynamic status text to prevent CLS */
@@ -66,37 +67,218 @@ body {
 
 /* Ad Styles Removed */
 
-/* Professional Container */
+/* Professional Container - Mobile First */
 .container {
     background: rgba(255, 255, 255, 0.95);
-    /* Mobile Tremor Fix: Simplified backdrop */
     border: 1px solid rgba(212, 175, 55, 0.15);
     box-shadow: var(--shadow-gold);
     transform: none !important;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 95%;
+    width: 100%;
+    /* Mobile: Full width */
     max-width: 1200px;
-    margin: 20px auto;
-    padding: 15px;
-    /* Mobile optimized padding */
-
-    /* Mobile Viewport Fix */
-    min-height: calc(100vh - 40px);
-    /* Fallback for older browsers */
-    min-height: calc(100svh - 40px);
-    /* Modern browsers */
+    margin: 10px auto;
+    /* UI-003: Reduced margin */
+    padding: 10px;
+    /* UI-003: Reduced padding */
+    min-height: calc(100vh - 20px);
+    min-height: calc(100svh - 20px);
     border-radius: 15px;
     isolation: isolate;
 }
 
+
+/* Desktop: Enhanced styling */
 @media (min-width: 768px) {
     .container {
         padding: 40px;
         width: 90%;
+        margin: 20px auto;
         background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
     }
+}
+
+/* =========================================
+   UI-001: EXTRACTED INLINE STYLES
+   ========================================= */
+
+/* Language Switcher - Mobile First */
+.lang-container {
+    position: static;
+    margin: 10px auto 20px;
+    text-align: center;
+    background: rgba(254, 252, 242, 0.95);
+    padding: 8px;
+    border-radius: 20px;
+    box-shadow: 0 1px 5px rgba(212, 175, 55, 0.2);
+    /* Lighter on mobile */
+    z-index: 1000;
+}
+
+.lang-container select {
+    padding: 8px 15px;
+    border-radius: 15px;
+    border: 2px solid var(--gold-primary);
+    background: var(--cream-bg);
+    font-family: inherit;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--gold-secondary);
+    transition: all 0.3s ease;
+}
+
+/* Desktop: Fixed positioning */
+@media (min-width: 768px) {
+    .lang-container {
+        position: fixed !important;
+        top: 20px !important;
+        left: 20px !important;
+        margin: 0;
+        backdrop-filter: blur(10px);
+        /* Only on desktop */
+        box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+    }
+}
+
+/* Streak Counter */
+#streak-counter {
+    text-align: center;
+    font-weight: bold;
+    color: #e67e22;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+/* Location Control */
+.location-control {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Buttons - Mobile First */
+.btn-primary,
+.btn-secondary,
+button {
+    background: var(--gold-primary);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    /* UI-006: Larger touch target */
+    border-radius: 20px;
+    font-family: 'Cairo';
+    cursor: pointer;
+    font-weight: bold;
+    min-height: 44px;
+    /* UI-006: Touch target */
+    min-width: 44px;
+    touch-action: manipulation;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary {
+    background: var(--gold-secondary);
+}
+
+#location-status {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    min-height: 1.5em;
+}
+
+/* Certificate Banner - Mobile First (Simplified) */
+.certificate-banner {
+    margin-top: 20px;
+    padding: 15px;
+    /* UI-007: Reduced padding */
+    background: #f4e4b8;
+    /* UI-007: Solid color on mobile */
+    border-radius: 10px;
+    box-shadow: none;
+    /* UI-007: No shadow on mobile */
+    text-align: center;
+}
+
+.cert-banner-title {
+    font-size: 1.5rem;
+    /* Reduced for mobile */
+    font-weight: bold;
+    color: #2c1810;
+    margin-bottom: 10px;
+}
+
+.cert-banner-desc {
+    font-size: 1rem;
+    color: #5a4a3a;
+    margin-bottom: 15px;
+}
+
+.progress-container {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 25px;
+    height: 30px;
+    margin: 15px auto;
+    max-width: 500px;
+    overflow: hidden;
+    position: relative;
+}
+
+#global-progress-bar {
+    background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
+    height: 100%;
+    width: 0%;
+    transition: width 0.5s ease;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#global-progress-text {
+    color: white;
+    font-weight: bold;
+    font-size: 0.9rem;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    z-index: 1;
+}
+
+.cert-banner-stats {
+    font-size: 0.95rem;
+    color: #5a4a3a;
+    margin-top: 10px;
+}
+
+/* Desktop: Enhanced certificate banner */
+@media (min-width: 768px) {
+    .certificate-banner {
+        padding: 20px;
+        background: linear-gradient(135deg, #d4af37 0%, #f4e4b8 100%);
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .cert-banner-title {
+        font-size: 1.8rem;
+    }
+
+    .cert-banner-desc {
+        font-size: 1.1rem;
+    }
+}
+
+/* Section Titles */
+.section-title {
+    color: var(--gold-secondary);
+    border-bottom: 2px solid var(--gold-primary);
+    padding-bottom: 5px;
+    margin-top: 40px;
 }
 
 /* =========================================
@@ -195,13 +377,22 @@ h3 {
     border-bottom: 3px solid var(--gold-primary);
     padding-bottom: 25px;
     position: relative;
-    animation: fadeInDown 1s ease-out;
+    animation: none;
+    /* UI-005: Remove animation on mobile */
     min-height: 200px;
     padding-top: 60px;
 }
 
+/* Desktop: Add animation only if user allows */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    .premium-header {
+        animation: fadeInDown 1s ease-out;
+    }
+}
+
 .premium-header h1 {
-    font-size: 3rem;
+    font-size: 1.8rem;
+    /* UI-009: Mobile first */
     font-weight: 700;
     color: var(--gold-secondary);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
@@ -214,10 +405,24 @@ h3 {
     z-index: 1;
 }
 
+/* Desktop: Larger font */
+@media (min-width: 768px) {
+    .premium-header h1 {
+        font-size: 3rem;
+    }
+}
+
 .premium-header .subhead {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
+    /* Reduced for mobile */
     color: var(--text-muted);
     font-weight: 300;
+}
+
+@media (min-width: 768px) {
+    .premium-header .subhead {
+        font-size: 1.4rem;
+    }
 }
 
 /* Language Container Fix */
@@ -241,20 +446,45 @@ h3 {
 
 input#user-name {
     font-family: 'Cairo', sans-serif;
-    font-size: 1.8rem;
+    font-size: 1.2rem;
+    /* Mobile: Smaller */
     font-weight: 700;
     color: var(--text-dark);
     text-align: center;
     background: linear-gradient(145deg, #f9e6b3, #e6c27a);
     border: 2px solid var(--gold-primary);
     border-radius: 50px;
-    padding: 10px 40px;
-    width: auto;
-    min-width: 300px;
+    padding: 10px 20px;
+    /* Reduced padding */
+    width: 90%;
+    /* UI-010: Responsive width */
+    max-width: 400px;
+    /* UI-010: Prevent overflow */
+    min-width: 200px;
     box-shadow: 0 4px 8px rgba(180, 130, 50, 0.2);
     outline: none;
     transition: all 0.3s ease;
     cursor: text;
+}
+
+/* Desktop: Larger styling */
+@media (min-width: 768px) {
+    input#user-name {
+        font-size: 1.8rem;
+        padding: 10px 40px;
+        width: auto;
+        min-width: 300px;
+    }
+}
+
+/* UI-011: Accessibility - Focus Indicators */
+input#user-name:focus,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--gold-primary);
+    outline-offset: 2px;
 }
 
 input#user-name:focus {
@@ -846,5 +1076,42 @@ section:nth-child(4) {
     body {
         scroll-behavior: auto !important;
         /* Instant scroll response */
+    }
+}
+
+/* =========================================
+   UI-012: REDUCED MOTION SUPPORT
+   ========================================= */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* =========================================
+   UI-006: GLOBAL TOUCH TARGETS
+   ========================================= */
+input,
+select,
+a,
+label {
+    min-height: 44px;
+    touch-action: manipulation;
+}
+
+/* Desktop can override */
+@media (min-width: 768px) {
+
+    input,
+    select,
+    a,
+    label {
+        min-height: auto;
     }
 }

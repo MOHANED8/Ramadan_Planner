@@ -28,11 +28,9 @@
     <div class="container">
         <!-- ========== PREMIUM HEADER ========== -->
         <header class="premium-header">
-            <!-- Language Switcher - Sticky -->
-            <div class="lang-container no-print"
-                style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(254, 252, 242, 0.95); padding: 8px; border-radius: 20px; box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3); backdrop-filter: blur(10px);">
-                <select id="lang-switch"
-                    style="padding: 8px 15px; border-radius: 15px; border: 2px solid var(--gold-primary); background: var(--cream-bg); font-family: inherit; cursor: pointer; font-weight: 600; color: var(--gold-secondary); transition: all 0.3s ease;">
+            <!-- Language Switcher -->
+            <div class="lang-container no-print">
+                <select id="lang-switch">
                     <option value="ar">🇸🇦 العربية</option>
                     <option value="en">🇬🇧 English</option>
                 </select>
@@ -45,9 +43,7 @@
             </div>
 
             <!-- Gamification: Streak Counter -->
-            <div id="streak-counter"
-                style="text-align: center; font-weight: bold; color: #e67e22; margin-bottom: 10px; font-size: 1.1rem;">
-            </div>
+            <div id="streak-counter"></div>
 
             <h1 data-i18n="title">مخطط رمضان الذهبي الفاخر <span class="hijri-year"></span></h1>
 
@@ -60,59 +56,36 @@
 
 
             <!-- Location & Prayer Times Control -->
-            <div class="location-control no-print"
-                style="margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                <button id="btn-location" style="
-                    background: var(--gold-primary); 
-                    color: white; 
-                    border: none; 
-                    padding: 8px 20px; 
-                    border-radius: 20px; 
-                    font-family: 'Cairo'; 
-                    cursor: pointer; 
-                    font-weight: bold;" data-i18n="locationBtn">
+            <div class="location-control no-print">
+                <button id="btn-location" class="btn-primary" data-i18n="locationBtn">
                     📍 تحديد موقعي (أوقات الصلاة)
                 </button>
 
-                <button id="btn-install" style="
-                    display: none;
-                    background: var(--gold-secondary); 
-                    color: white; 
-                    border: none; 
-                    padding: 8px 20px; 
-                    border-radius: 20px; 
-                    font-family: 'Cairo'; 
-                    cursor: pointer; 
-                    font-weight: bold;">
+                <button id="btn-install" class="btn-secondary" style="display: none;">
                     📲 تثبيت التطبيق
                 </button>
 
-                <div id="location-status"
-                    style="width: 100%; margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);"></div>
+                <div id="location-status"></div>
             </div>
 
             <!-- Daily Affirmation -->
             <div id="daily-verse"></div>
 
             <!-- Certificate Achievement Banner -->
-            <div class="certificate-banner no-print"
-                style="margin-top: 20px; padding: 20px; background: linear-gradient(135deg, #d4af37 0%, #f4e4b8 100%); border-radius: 15px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); text-align: center;">
-                <div style="font-size: 1.8rem; font-weight: bold; color: #2c1810; margin-bottom: 10px;">
+            <div class="certificate-banner no-print">
+                <div class="cert-banner-title">
                     🏆 <span data-i18n="certificateBannerTitle">نظام شهادة الإنجاز</span> 🏆
                 </div>
-                <div style="font-size: 1.1rem; color: #5a4a3a; margin-bottom: 15px;">
+                <div class="cert-banner-desc">
                     <span data-i18n="certificateBannerDesc">أكمل 75% من المهام اليومية (9 من 12) لتحصل على شهادة إنجاز
                         رمضانية فاخرة!</span>
                 </div>
-                <div class="progress-container"
-                    style="background: rgba(255,255,255,0.5); border-radius: 25px; height: 30px; margin: 15px auto; max-width: 500px; overflow: hidden; position: relative;">
-                    <div id="global-progress-bar"
-                        style="background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%); height: 100%; width: 0%; transition: width 0.5s ease; border-radius: 25px; display: flex; align-items: center; justify-content: center;">
-                        <span id="global-progress-text"
-                            style="color: white; font-weight: bold; font-size: 0.9rem; position: absolute; width: 100%; text-align: center; z-index: 1;">0%</span>
+                <div class="progress-container">
+                    <div id="global-progress-bar">
+                        <span id="global-progress-text">0%</span>
                     </div>
                 </div>
-                <div style="font-size: 0.95rem; color: #5a4a3a; margin-top: 10px;">
+                <div class="cert-banner-stats">
                     ✅ <span id="completed-tasks-count">0</span> / <span id="total-tasks-count">360</span> <span
                         data-i18n="tasksCompleted">مهمة مكتملة</span>
                 </div>
@@ -127,8 +100,7 @@
 
         <!-- ========== QURAN TRACKER ========== -->
         <section>
-            <h2 style="color: var(--gold-secondary); border-bottom: 2px solid var(--gold-primary); padding-bottom: 5px;"
-                data-i18n="quranTitle">
+            <h2 class="section-title" data-i18n="quranTitle">
                 📖 جدول تتبع ختم القرآن الكريم</h2>
             <div class="table-wrapper">
                 <table class="table-gold">
@@ -150,8 +122,7 @@
 
         <!-- ========== WORKOUT PROGRAM ========== -->
         <section>
-            <h2 data-i18n="workoutTitle"
-                style="color: var(--gold-secondary); border-bottom: 2px solid var(--gold-primary); padding-bottom: 5px; margin-top: 40px;">
+            <h2 class="section-title" data-i18n="workoutTitle">
                 🏋️ برنامج القوة والمرونة – تعريف العضلات</h2>
             <div class="table-wrapper">
                 <table class="table-gold sports-table">
@@ -174,8 +145,7 @@
 
         <!-- ========== DAILY SCHEDULE ========== -->
         <section>
-            <h2 style="color: var(--gold-secondary); border-bottom: 2px solid var(--gold-primary); padding-bottom: 5px; margin-top: 40px;"
-                data-i18n="scheduleTitle">
+            <h2 class="section-title" data-i18n="scheduleTitle">
                 🗓️ الجدول اليومي الفاخر</h2>
             <div id="days-container" class="days-container">
                 <!-- Javascript will populate this -->
@@ -204,8 +174,12 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker registered!', reg))
-                    .catch(err => console.error('Service Worker registration failed:', err));
+                    .then(reg => {
+                        // Service Worker registered successfully
+                    })
+                    .catch(err => {
+                        // Service Worker registration failed
+                    });
             });
         }
     </script>
