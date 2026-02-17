@@ -1,14 +1,13 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    # DDoS & Security Hardening
-    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    # Relaxed Security Headers for Troubleshooting
     X-Content-Type-Options = "nosniff"
-    X-Frame-Options = "DENY"
+    X-Frame-Options = "SAMEORIGIN"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "no-referrer-when-downgrade"
     Permissions-Policy = "geolocation=(self), microphone=(), camera=()"
-    # Content Security Policy (Hardening)
+    # Simplified CSP for initial restore
     Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:;"
 
 [[headers]]
