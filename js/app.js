@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             allDaysHTML += `<div class="daily-card">`;
             allDaysHTML += `<div class="daily-title">📅 ${t.scheduleTitle.replace('🗓️ ', '')} ${day}</div>`;
-            allDaysHTML += `<table class="table-gold">`;
+            allDaysHTML += `<div class="table-wrapper"><table class="table-gold">`;
             allDaysHTML += `<thead><tr><th>${t.scheduleTime}</th><th>${t.scheduleTask}</th></tr></thead>`;
             allDaysHTML += `<tbody>`;
             scheduleRows.forEach((item, index) => {
@@ -310,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </td>
                 </tr>`;
             });
-            allDaysHTML += `</tbody></table></div>`;
+            allDaysHTML += `</tbody></table></div></div>`;
         }
         daysContainer.innerHTML = allDaysHTML;
 

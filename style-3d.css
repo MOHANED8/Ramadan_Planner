@@ -1,402 +1,167 @@
 /* ========================================
-   ULTIMATE PROFESSIONAL 3D ENHANCEMENTS
+   OPTIMIZED PREMIUM UI ENHANCEMENTS
    ======================================== */
 
 :root {
-    /* Professional 3D Depth System */
-    --shadow-depth-1: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    --shadow-depth-2: 0 3px 6px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.12);
-    --shadow-depth-3: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.10);
-    --shadow-depth-4: 0 15px 25px rgba(0, 0, 0, 0.15), 0 5px 10px rgba(0, 0, 0, 0.05);
-    --shadow-depth-5: 0 20px 40px rgba(0, 0, 0, 0.2);
-    --shadow-gold-glow: 0 0 30px rgba(212, 175, 55, 0.3), 0 0 60px rgba(212, 175, 55, 0.1);
-    --shadow-gold-intense: 0 8px 32px rgba(212, 175, 55, 0.35), 0 0 0 1px rgba(212, 175, 55, 0.1);
-
-    /* Advanced Gradients */
-    --gradient-gold: linear-gradient(135deg, #f3e5b5 0%, #d4af37 50%, #b38b2d 100%);
-    --gradient-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    /* Professional Depth System - Optimized */
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+    --shadow-gold: 0 4px 14px 0 rgba(212, 175, 55, 0.25);
+    
+    /* Gradients */
+    --gradient-gold: linear-gradient(135deg, #f3e5b5 0%, #d4af37 100%);
+    --gradient-card: linear-gradient(145deg, #ffffff 0%, #fefcf2 100%);
 }
 
-/* Enhanced Body with Animated Background */
+/* Enhanced Body */
 body {
-    background: linear-gradient(135deg, #fefcf2 0%, #f5f0e8 50%, #fdfbf7 100%) !important;
-    background-attachment: fixed !important;
-    background-size: 400% 400% !important;
-    animation: gradientShift 15s ease infinite !important;
-    /* Reduced for better performance */
-    perspective: 1000px !important;
-    perspective-origin: center !important;
-    /* Add performance hint */
-    will-change: background-position;
-    transform: translateZ(0);
+    background-color: #fefcf2 !important;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.05) 0px, transparent 50%) !important;
+    background-attachment: scroll !important; /* Better performance on mobile */
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-@keyframes gradientShift {
-
-    0%,
-    100% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-}
-
-/* Professional Glassmorphism Container */
+/* Professional Container */
 .container {
-    background: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-    padding: 40px !important;
-    border-radius: 24px !important;
-    border: 1px solid rgba(212, 175, 55, 0.1) !important;
-    box-shadow: var(--shadow-depth-4), var(--shadow-gold-glow) !important;
-    transform-style: preserve-3d !important;
-    animation: containerEntrance 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    position: relative !important;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    box-shadow: var(--shadow-lg), var(--shadow-gold);
+    transform: none !important; /* Remove 3D transform */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 95%; /* Mobile first width */
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px; /* Reduced padding for mobile */
 }
 
-.container::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: var(--gradient-gold);
-    border-radius: 24px;
-    opacity: 0;
-    z-index: -1;
-    transition: opacity 0.4s ease;
-}
-
-.container:hover::before {
-    opacity: 0.1;
-}
-
-.container:hover {
-    transform: translateY(-8px) scale(1.01) !important;
-    box-shadow: var(--shadow-depth-5), var(--shadow-gold-intense) !important;
-}
-
-@keyframes containerEntrance {
-    0% {
-        opacity: 0;
-        transform: translateY(60px) rotateX(15deg) scale(0.9);
-        filter: blur(10px);
-    }
-
-    60% {
-        transform: translateY(-10px) rotateX(-2deg) scale(1.02);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0) rotateX(0) scale(1);
-        filter: blur(0);
+@media (min-width: 768px) {
+    .container {
+        padding: 40px;
+        width: 90%;
     }
 }
 
-/* Professional Header with 3D Depth */
-.premium-header {
-    transform-style: preserve-3d !important;
-    position: relative !important;
+/* Premium Header */
+.premium-header h1 {
+    font-size: 2rem; /* Mobile first font size */
+    transition: transform 0.3s ease;
 }
 
-.premium-header::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 120%;
-    height: 120%;
-    background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
-    z-index: -1;
-    animation: pulse 3s ease-in-out infinite;
+@media (min-width: 768px) {
+    .premium-header h1 {
+        font-size: 3rem;
+    }
 }
 
-/* 3D Headings */
-h1,
-h2,
-h3 {
-    transform-style: preserve-3d !important;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    position: relative !important;
+/* Buttons */
+button, .btn {
+    transform: translateY(0);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background-image: linear-gradient(to right, var(--gold-primary) 0%, var(--gold-secondary) 100%);
+    background-size: 200% auto;
+    color: white;
+    box-shadow: var(--shadow-md);
+    border: none;
+    cursor: pointer;
+    /* Touch target size optimization */
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-h1::before,
-h2::before {
-    content: attr(data-text);
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    z-index: -1;
-    color: rgba(212, 175, 55, 0.2);
-    filter: blur(2px);
+button:hover, .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-gold);
+    background-position: right center;
 }
 
-h1:hover,
-h2:hover {
-    transform: translateZ(20px) scale(1.03) !important;
-    text-shadow: 0 10px 30px rgba(212, 175, 55, 0.4),
-        0 0 20px rgba(212, 175, 55, 0.2) !important;
+button:active, .btn:active {
+    transform: translateY(0);
 }
 
-/* Professional Table 3D Effects */
-.table-gold {
-    transform-style: preserve-3d !important;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: var(--shadow-depth-2) !important;
-    border-radius: 16px !important;
-    overflow: auto !important;
-    /* Changed to auto for scrollbars */
-    /* Add performance hints */
-    will-change: transform, opacity;
-    backface-visibility: hidden;
+/* Form Elements */
+input, select {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    /* Prevent zoom on mobile inputs */
+    font-size: 16px !important; 
+    min-height: 44px; /* Touch friendly */
 }
 
-.table-gold:hover {
-    transform: translateY(-10px) translateZ(30px) scale(1.02) !important;
-    box-shadow: var(--shadow-depth-5), var(--shadow-gold-intense) !important;
+input:focus, select:focus {
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+    outline: none;
 }
 
-.table-gold thead {
-    background: var(--gradient-gold) !important;
-    position: relative !important;
-    overflow: hidden !important;
-    /* Keep for gradient animation */
-}
-
-.table-gold thead::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
+/* Optimize Tables for Mobile */
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     width: 100%;
-    height: 100%;
-    background: var(--gradient-shimmer);
-    animation: shimmer 3s infinite;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
 }
 
-@keyframes shimmer {
-    0% {
-        left: -100%;
-    }
-
-    100% {
-        left: 200%;
-    }
+/* Cards */
+.daily-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    background: white;
 }
 
-.table-gold tr {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    transform-style: preserve-3d !important;
+.daily-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
 }
 
-.table-gold tbody tr:hover {
-    transform: translateX(-8px) translateZ(10px) !important;
-    background: linear-gradient(90deg, rgba(212, 175, 55, 0.12), rgba(212, 175, 55, 0.05)) !important;
-    box-shadow: inset 4px 0 0 var(--gold-primary) !important;
-}
-
-.table-gold td,
-.table-gold th {
-    transition: all 0.3s ease !important;
-}
-
-.table-gold tbody tr:hover td {
-    transform: translateZ(5px) !important;
-}
-
-/* Professional Buttons with 3D Depth */
-button,
-.btn {
-    transform-style: preserve-3d !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: var(--shadow-depth-2) !important;
-    position: relative !important;
-    overflow: hidden !important;
-    /* Keep for ripple effect */
-    /* Add performance hints */
-    will-change: transform, opacity;
-    backface-visibility: hidden;
-}
-
-button::before,
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-}
-
-button:hover::before,
-.btn:hover::before {
-    width: 300px;
-    height: 300px;
-}
-
-button:hover,
-.btn:hover {
-    transform: translateY(-5px) translateZ(20px) scale(1.05) !important;
-    box-shadow: var(--shadow-depth-4), var(--shadow-gold-glow) !important;
-}
-
-button:active,
-.btn:active {
-    transform: translateY(-2px) translateZ(10px) scale(1.02) !important;
-    box-shadow: var(--shadow-depth-2) !important;
-}
-
-/* Professional Input Fields */
-input,
-select,
-textarea {
-    transform-style: preserve-3d !important;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: var(--shadow-depth-1) !important;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-    transform: translateY(-3px) translateZ(10px) scale(1.02) !important;
-    box-shadow: var(--shadow-depth-3), 0 0 0 3px rgba(212, 175, 55, 0.1) !important;
-}
-
-/* Cinematic Scroll Animations */
-section {
-    animation: sectionReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards !important;
-    transform-style: preserve-3d !important;
-    transition: all 0.4s ease !important;
-}
-
-section:nth-child(1) {
-    animation-delay: 0.1s;
-}
-
-section:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-section:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-section:nth-child(4) {
-    animation-delay: 0.4s;
-}
-
-section:nth-child(5) {
-    animation-delay: 0.5s;
-}
-
-@keyframes sectionReveal {
-    0% {
-        opacity: 0;
-        transform: translateY(50px) rotateX(10deg) scale(0.95);
-        filter: blur(5px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0) rotateX(0) scale(1);
-        filter: blur(0);
-    }
-}
-
-/* Gold Separator with Pulse Effect */
-.gold-separator {
-    animation: separatorPulse 2.5s ease-in-out infinite !important;
-    transform-style: preserve-3d !important;
-}
-
-@keyframes separatorPulse {
-
-    0%,
-    100% {
-        opacity: 1;
-        transform: scale(1) translateZ(0);
-        filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3));
-    }
-
-    50% {
-        opacity: 0.85;
-        transform: scale(1.08) translateZ(5px);
-        filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.5));
-    }
-}
-
-/* Professional Card Effects */
-.card,
-.section-card {
-    transform-style: preserve-3d !important;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: var(--shadow-depth-2) !important;
-}
-
-.card:hover,
-.section-card:hover {
-    transform: translateY(-8px) translateZ(20px) rotateX(2deg) !important;
-    box-shadow: var(--shadow-depth-4), var(--shadow-gold-glow) !important;
-}
-
-/* Smooth Scroll Behavior */
-html {
-    scroll-behavior: smooth !important;
-}
-
-/* Parallax Effect for Background Elements */
-@media (prefers-reduced-motion: no-preference) {
-    body::before {
-        transform: translateZ(-1px) scale(2);
-        z-index: -1;
-    }
-}
-
-/* Loading Animation */
-@keyframes fadeIn {
+/* Performance Animations - Fade In Only */
+@keyframes fadeInUp {
     from {
         opacity: 0;
         transform: translateY(20px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-/* Responsive 3D Adjustments */
-@media (max-width: 768px) {
-    body {
-        perspective: 1000px !important;
-    }
+section {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0; /* Star hidden */
+}
 
-    .container:hover {
-        transform: translateY(-4px) scale(1.005) !important;
-    }
+section:nth-child(1) { animation-delay: 0.1s; }
+section:nth-child(2) { animation-delay: 0.2s; }
+section:nth-child(3) { animation-delay: 0.3s; }
+section:nth-child(4) { animation-delay: 0.4s; }
 
-    .table-gold:hover {
-        transform: translateY(-5px) scale(1.01) !important;
+/* Remove expensive animations on mobile or reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }
 
 /* Print Optimization */
 @media print {
     * {
-        animation: none !important;
-        transition: none !important;
-        transform: none !important;
         box-shadow: none !important;
+        text-shadow: none !important;
+        background: transparent !important;
+        color: black !important;
     }
+    .no-print { display: none !important; }
 }
