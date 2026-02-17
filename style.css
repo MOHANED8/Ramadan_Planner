@@ -22,29 +22,30 @@
 
 html {
     overflow-x: hidden;
+    overflow-y: auto;
+    /* Let browser handle vertical scroll naturally */
     width: 100%;
+    overscroll-behavior: none;
+    /* Prevent rubber-banding/bounce globally */
+    -webkit-text-size-adjust: 100%;
+    /* Prevent font scaling on orientation change */
 }
 
 body {
     font-family: 'Cairo', 'Amiri', 'Traditional Arabic', sans-serif;
     background-color: var(--cream-bg);
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    /* Mobile Background: Simple Gradient by default for performance */
+    background: linear-gradient(135deg, #fefcf2 0%, #f9f4e0 100%);
     color: var(--text-dark);
     line-height: 1.6;
     padding: 20px;
     direction: rtl;
     min-height: 100svh;
-    /* Helper for mobile viewports */
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    /* Force scrollbar to prevent jump */
-    /* Critical for scroll stability */
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
-    overscroll-behavior-x: none;
     width: 100%;
     position: relative;
+    /* Removed overflow-y: scroll to prevent dual-scroll containers */
+    -webkit-font-smoothing: antialiased;
+    /* Crisp text rendering */
 }
 
 /* Reserve space for dynamic status text to prevent CLS */
@@ -783,7 +784,6 @@ section:nth-child(4) {
             -webkit-backdrop-filter: none !important;
             box-shadow: none !important;
             transform: none !important;
-            transform: none !important;
             will-change: auto !important;
             /* Release GPU memory */
             /* Ensure containment on heavy children too */
@@ -809,5 +809,23 @@ section:nth-child(4) {
         padding: 10px;
         box-sizing: border-box;
         /* Critical for padding calculation */
+    }
+
+    /* GLOBAL ANIMATION KILL-SWITCH FOR MOBILE STABILITY */
+    /* If it moves, kill it. Zero jitter allowed. */
+    *,
+    .gold-separator,
+    .cert-icon,
+    .seal-circle,
+    .premium-header,
+    section {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    html,
+    body {
+        scroll-behavior: auto !important;
+        /* Instant scroll response */
     }
 }
