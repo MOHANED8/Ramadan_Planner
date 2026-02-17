@@ -1030,55 +1030,6 @@ section:nth-child(4) {
         font-size: 1.3rem;
     }
 
-    input,
-    select,
-    button {
-        max-width: 100%;
-
-        /* Mobile Tremor Fix: Disable heavy GPU effects */
-        .gold-separator {
-            animation: none !important;
-            transform: none !important;
-        }
-
-        .premium-header,
-        section {
-            animation: none !important;
-            transition: none !important;
-        }
-
-        .container {
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            box-shadow: none !important;
-            transform: none !important;
-            will-change: auto !important;
-            /* Release GPU memory */
-            /* Ensure containment on heavy children too */
-            contain: content;
-        }
-
-        /* Strict Containment for Cards */
-        .daily-card {
-            contain: content;
-            will-change: auto;
-        }
-
-        /* Input zoom fix */
-        input#user-name {
-            font-size: 16px !important;
-            /* Prevents iOS zoom */
-        }
-    }
-
-    input#user-name {
-        font-size: 1.2rem;
-        width: 100%;
-        padding: 10px;
-        box-sizing: border-box;
-        /* Critical for padding calculation */
-    }
-
     /* GLOBAL ANIMATION KILL-SWITCH FOR MOBILE STABILITY */
     /* If it moves, kill it. Zero jitter allowed. */
     *,
@@ -1089,13 +1040,36 @@ section:nth-child(4) {
     section {
         animation: none !important;
         transition: none !important;
+        transform: none !important;
     }
 
-    html,
-    body {
-        scroll-behavior: auto !important;
-        /* Instant scroll response */
+    .container {
+        width: 100%;
+        max-width: 100vw;
+        height: 100%;
+        overflow-y: auto !important;
+        /* Restore vertical scroll */
+        overflow-x: hidden !important;
+        /* Block ghost swipe */
+        -webkit-overflow-scrolling: touch;
+        contain: content;
+        box-sizing: border-box;
     }
+
+    input#user-name {
+        font-size: 16px !important;
+        /* Prevents iOS zoom jitter */
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+}
+
+html,
+body {
+    scroll-behavior: auto !important;
+    /* Instant scroll response */
+}
 }
 
 /* =========================================
