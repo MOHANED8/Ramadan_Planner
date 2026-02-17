@@ -4,8 +4,11 @@ import { workouts, workouts_en } from './workouts.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 0. Multilingual Support ---
+    // --- 0. Storage Keys (Define early to avoid ReferenceErrors) ---
     const STORAGE_KEY_LANG = 'ramadan_planner_lang';
+    const STORAGE_KEY_NAME = 'ramadan_planner_name';
+    const STORAGE_KEY_PROGRESS = 'ramadan_daily_progress';
+    const CERT_STORAGE_KEY = 'certificates_awarded';
 
     // --- 0.5. Enterprise Sync Manager (Core Data Layer) ---
     const SyncManager = {
@@ -96,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 1. Personalization (Editable Name) ---
     const nameInput = document.getElementById('user-name');
-    const STORAGE_KEY_NAME = 'ramadan_planner_name';
 
     // Load saved name
     const savedName = SyncManager.get(STORAGE_KEY_NAME);
@@ -369,6 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dayHTML += `<thead><tr><th>${t.scheduleTime || ''}</th><th>${t.scheduleTask || ''}</th></tr></thead>`;
             dayHTML += `<tbody>`;
 
+            const progressData = getProgressData();
             const dayKey = `day-${day}`;
             scheduleRows.forEach((item, index) => {
                 const taskId = `day-${day}-task-${index}`;
@@ -571,8 +574,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========================================
     // CERTIFICATE SYSTEM
     // ========================================
-    const STORAGE_KEY_PROGRESS = 'ramadan_daily_progress';
-    const CERT_STORAGE_KEY = 'certificates_awarded';
 
     // --- Streak System ---
     function updateStreak() {
