@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ramadan-planner-v13';
+const CACHE_NAME = 'ramadan-planner-v14';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',

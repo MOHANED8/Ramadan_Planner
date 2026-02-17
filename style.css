@@ -28,8 +28,9 @@
 }
 
 html {
-    overflow: visible !important;
-    height: auto !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
     scroll-behavior: auto !important;
     -webkit-text-size-adjust: 100%;
 }
@@ -44,7 +45,8 @@ body {
     direction: rtl;
     width: 100%;
     min-height: 100vh;
-    overflow: visible !important;
+    overflow-x: hidden;
+    overflow-y: visible;
     position: relative;
     -webkit-font-smoothing: antialiased;
 }
@@ -904,11 +906,13 @@ section {
     }
 }
 
-/* MOBILE CONSOLIDATION PHASE 23: GLOBAL SCROLL LIBERATION */
+/* MOBILE CONSOLIDATION PHASE 25: FINAL STABILITY */
 @media (max-width: 768px) {
-    html {
-        overflow-x: hidden;
-        overflow-y: auto;
+
+    html,
+    body {
+        overflow-x: hidden !important;
+        width: 100%;
     }
 
     body {
