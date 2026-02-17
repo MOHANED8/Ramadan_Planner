@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const div = document.createElement('div');
             div.className = 'daily-card-placeholder';
             div.dataset.day = day;
-            div.style.minHeight = '200px';
+            div.style.minHeight = '600px'; /* Match typical card height to prevent jumps */
             div.innerHTML = `<div class="loading-spinner">⏳ Loading Day ${day}...</div>`;
             return div;
         };

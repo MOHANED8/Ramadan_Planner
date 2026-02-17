@@ -40,14 +40,15 @@ body {
     color: var(--text-dark);
     line-height: 1.6;
     padding: 0;
-    /* UI-003: Remove padding on mobile */
     direction: rtl;
-    min-height: 100vh;
     width: 100%;
-    max-width: 100%;
-    position: relative;
-    touch-action: pan-y;
-    -webkit-overflow-scrolling: touch;
+    height: 100%;
+    /* App Shell: Lock body to viewport */
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    touch-action: none;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -73,18 +74,15 @@ body {
     border: 1px solid rgba(212, 175, 55, 0.15);
     box-shadow: var(--shadow-gold);
     transform: none !important;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
-    /* Mobile: Full width */
-    max-width: 1200px;
-    margin: 10px auto;
-    /* UI-003: Reduced margin */
+    height: 100%;
+    /* App Shell: Handle scrolling here */
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     padding: 10px;
-    /* UI-003: Reduced padding */
-    min-height: calc(100vh - 20px);
-    min-height: calc(100svh - 20px);
-    border-radius: 15px;
-    isolation: isolate;
+    position: relative;
+    z-index: 1;
 }
 
 
@@ -504,7 +502,7 @@ input#user-name::placeholder {
     justify-content: center;
     gap: 15px;
     margin: 25px 0;
-    will-change: transform, opacity;
+    /* Removed pulse animation to eliminate layout jitter */
 }
 
 .gold-separator .line {
