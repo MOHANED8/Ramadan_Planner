@@ -258,6 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Defensive: ensure valid language
         const langCode = (translations[currentLang]) ? currentLang : 'ar';
         const t = translations[langCode];
+        const progressData = getProgressData();
 
         // Select the correct workout array based on language
         const workoutData = langCode === 'en' ? workouts_en : workouts;
@@ -265,14 +266,33 @@ document.addEventListener('DOMContentLoaded', () => {
         let rows = '';
         if (workoutData && Array.isArray(workoutData)) {
             workoutData.forEach(item => {
+                const dayKey = `day-${item.day}`;
+                const notes = progressData[dayKey]?.workoutNotes || '';
                 rows += `<tr>
                     <td data-label="${t.workoutDay || ''}">${t.workoutDay || ''} ${item.day}</td>
                     <td data-label="${t.workoutFocus || ''}">${item.focus}</td>
                     <td data-label="${t.workoutDetails || ''}">${item.details}</td>
+                    <td data-label="${t.workoutNotes || ''}">
+                        <input type="text" class="workout-note-input" data-day="${item.day}" value="${notes}" placeholder="..." style="width: 100%; border: 1px solid #d4af37; border-radius: 4px; padding: 5px; font-family: inherit;">
+                    </td>
                 </tr>`;
             });
         }
         sportsBody.innerHTML = rows;
+
+        // Add Listeners for saving notes
+        document.querySelectorAll('.workout-note-input').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const dayNum = e.target.dataset.day;
+                const noteValue = e.target.value;
+
+                let progress = getProgressData();
+                const dKey = 'day-' + dayNum;
+                if (!progress[dKey]) progress[dKey] = { tasks: Array(12).fill(false), certificateAwarded: false };
+                progress[dKey].workoutNotes = noteValue;
+                saveProgressData(progress);
+            });
+        });
     }
 
     // --- 5. Dynamic Daily Schedule & Prayer Times ---
