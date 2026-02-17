@@ -51,6 +51,20 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+html,
+body {
+    max-width: 100%;
+    overscroll-behavior-x: none;
+}
+
+@supports (overflow: clip) {
+
+    html,
+    body {
+        overflow-x: clip;
+    }
+}
+
 /* Desktop: Restore padding */
 @media (min-width: 768px) {
     body {
@@ -95,6 +109,19 @@ body {
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
     }
+}
+
+.table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+}
+
+img,
+svg,
+canvas,
+table {
+    max-width: 100%;
 }
 
 /* =========================================
@@ -309,6 +336,15 @@ button {
         padding: 0.75rem 0;
         border-bottom: 1px solid #f8f8f8;
         font-size: 1rem;
+        min-width: 0;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .table-gold td>span {
+        min-width: 0;
+        overflow-wrap: anywhere;
+        flex: 1 1 auto;
     }
 
     .table-gold td:last-child {
@@ -422,18 +458,6 @@ h3 {
     .premium-header .subhead {
         font-size: 1.4rem;
     }
-}
-
-/* Language Container Fix */
-.lang-container {
-    position: fixed !important;
-    top: 20px !important;
-    left: 20px !important;
-    z-index: 1000 !important;
-}
-
-.lang-container select {
-    transition: all 0.3s ease;
 }
 
 /* Name Input Styling */
