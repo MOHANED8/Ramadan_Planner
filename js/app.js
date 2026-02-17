@@ -61,26 +61,36 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
         // Update Static Text
+        const t = translations[lang];
+        if (!t) return;
+
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
-            if (translations[lang][key]) {
+            if (t[key]) {
                 if (element.hasAttribute('placeholder')) {
-                    element.placeholder = translations[lang][key];
+                    element.placeholder = t[key];
+                } else if (element.tagName === 'INPUT' && element.type === 'button') {
+                    element.value = t[key];
                 } else {
-                    element.innerHTML = translations[lang][key];
-                    if (key === 'title') { // Re-add dynamic year span
-                        element.innerHTML = `${translations[lang][key]} <span class="hijri-year"></span>`;
-                        updateHijriYear();
+                    // Title special case
+                    if (key === 'title') {
+                        element.innerHTML = `${t[key]} <span class="hijri-year"></span>`;
+                    } else {
+                        element.innerHTML = t[key];
                     }
                 }
             }
         });
+
+        // Update Affirmation
+        updateAffirmation();
 
         // Re-render Dynamic Components
         renderQuranTable();
         renderWorkoutTable();
         renderSchedule();
         updateHijriYear();
+        updateGlobalProgress();
     }
 
 
@@ -104,39 +114,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 1.5 Dynamic Hijri Year ---
     function updateHijriYear() {
         try {
-            const hijriYear = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+            const locale = currentLang === 'ar' ? 'ar-SA-u-ca-islamic' : 'en-US-u-ca-islamic';
+            const hijriYear = new Intl.DateTimeFormat(locale, {
                 year: 'numeric'
-            }).format(Date.now());
+            }).format(new Date());
 
             document.querySelectorAll('.hijri-year').forEach(el => {
                 el.textContent = hijriYear;
             });
         } catch (e) {
             console.error("Hijri date error:", e);
-            // Fallback if Intl not supported
             document.querySelectorAll('.hijri-year').forEach(el => {
-                el.textContent = "١٤٤٧ هـ";
+                el.textContent = currentLang === 'ar' ? "١٤٤٧ هـ" : "1447 AH";
             });
         }
     }
-    updateHijriYear();
 
     // --- 2. Daily Affirmations ---
-    const affirmations = [
-        "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
-        "وَاصْبِرْ وَمَا صَبْرُكَ إِلَّا بِاللَّهِ",
-        "اللَّهُمَّ بَارِكْ لَنَا فِي شَهْرِ رَمَضَانَ",
-        "الصَّوْمُ جُنَّةٌ",
-        "مَنْ صَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ",
-        "اغتنم وقتك في طاعة الله",
-        "رمضان فرصة للتغيير للأفضل"
-    ];
+    function updateAffirmation() {
+        const t = translations[currentLang];
+        const affs = (t && t.affirmations) ? t.affirmations : affirmations; // Fallback to raw array if missing
 
-    // Pick a random affirmation daily (or simply random on load for now)
-    const randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
-    const verseContainer = document.getElementById('daily-verse');
-    if (verseContainer) {
-        verseContainer.innerHTML = `✨ ${randomAffirmation} ✨`;
+        // Use a simple seed based on the day of the year to keep it consistent for one day
+        const now = new Date();
+        const start = new Date(now.getFullYear(), 0, 0);
+        const diff = now - start;
+        const oneDay = 1000 * 60 * 60 * 24;
+        const dayOfYear = Math.floor(diff / oneDay);
+
+        const index = dayOfYear % affs.length;
+        const randomAff = affs[index];
+        const verseContainer = document.getElementById('daily-verse');
+        if (verseContainer) {
+            verseContainer.innerHTML = `✨ ${randomAff} ✨`;
+        }
     }
 
     // --- 3. Quran Tracker Table ---
@@ -182,21 +193,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let rows = '';
         const MAX_PAGE = 604;
-        const t = translations[currentLang];
+        const langCode = (translations[currentLang]) ? currentLang : 'ar';
+        const t = translations[langCode];
         const quranData = getQuranData();
 
         for (let i = 1; i <= 30; i++) {
             const dayData = quranData[`day${i}`] || { from: '', to: '' };
 
             rows += `<tr>
-                <td style="width: 20%;" data-label="${t.quranDay}">${t.quranDay} ${i}</td>
-                <td data-label="${t.quranFrom}">
+                <td style="width: 20%;" data-label="${t.quranDay || ''}">${t.quranDay || ''} ${i}</td>
+                <td data-label="${t.quranFrom || ''}">
                     <input type="number" class="quran-input" id="quran-day-${i}-from" name="quran-day-${i}-from" data-day="${i}" data-type="from" 
-                           placeholder="${t.quranFrom}" min="1" max="${MAX_PAGE}" value="${dayData.from}">
+                           placeholder="${t.quranFrom || ''}" min="1" max="${MAX_PAGE}" value="${dayData.from}">
                 </td>
-                <td data-label="${t.quranTo}">
+                <td data-label="${t.quranTo || ''}">
                     <input type="number" class="quran-input" id="quran-day-${i}-to" name="quran-day-${i}-to" data-day="${i}" data-type="to" 
-                           placeholder="${t.quranTo}" min="1" max="${MAX_PAGE}" value="${dayData.to}">
+                           placeholder="${t.quranTo || ''}" min="1" max="${MAX_PAGE}" value="${dayData.to}">
                 </td>
             </tr>`;
         }
@@ -236,10 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initial Render
-    renderQuranTable();
-    renderWorkoutTable();
-
     // --- 4. Workout Program ---
     const sportsBody = document.getElementById('sports-table-body');
 
@@ -247,18 +255,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderWorkoutTable() {
         if (!sportsBody) return;
 
-        const t = translations[currentLang];
+        // Defensive: ensure valid language
+        const langCode = (translations[currentLang]) ? currentLang : 'ar';
+        const t = translations[langCode];
+
         // Select the correct workout array based on language
-        const workoutData = currentLang === 'en' ? workouts_en : workouts;
+        const workoutData = langCode === 'en' ? workouts_en : workouts;
 
         let rows = '';
-        workoutData.forEach(item => {
-            rows += `<tr>
-                <td data-label="${t.workoutDay}">${t.workoutDay} ${item.day}</td>
-                <td data-label="${t.workoutFocus}">${item.focus}</td>
-                <td data-label="${t.workoutDetails}">${item.details}</td>
-            </tr>`;
-        });
+        if (workoutData && Array.isArray(workoutData)) {
+            workoutData.forEach(item => {
+                rows += `<tr>
+                    <td data-label="${t.workoutDay || ''}">${t.workoutDay || ''} ${item.day}</td>
+                    <td data-label="${t.workoutFocus || ''}">${item.focus}</td>
+                    <td data-label="${t.workoutDetails || ''}">${item.details}</td>
+                </tr>`;
+            });
+        }
         sportsBody.innerHTML = rows;
     }
 
@@ -280,36 +293,32 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderSchedule(apiTimings = []) {
         if (!daysContainer) return;
 
-        let allDaysHTML = '';
+        // Defensive: ensure valid language
+        const langCode = (translations[currentLang]) ? currentLang : 'ar';
+        const t = translations[langCode];
         const isDynamic = apiTimings.length > 0;
-        const t = translations[currentLang];
 
         // Efficient rendering using DocumentFragment
         const fragment = document.createDocumentFragment();
 
         // Lazy Loading / Virtualization Lite
-        // We will render placeholders first, then content when visible
         const createPlaceholder = (day) => {
             const div = document.createElement('div');
             div.className = 'daily-card-placeholder';
             div.dataset.day = day;
-            div.style.minHeight = '600px'; /* Match typical card height to prevent jumps */
+            div.style.minHeight = '600px';
             div.innerHTML = `<div class="loading-spinner">⏳ Loading Day ${day}...</div>`;
             return div;
         };
 
-        // Render logic for a single day (extracted)
         const generateDayHTML = (day) => {
-            // Get timings for this day (or fallback to default)
             const times = isDynamic ? apiTimings[(day - 1) % apiTimings.length].timings : defaultTimings;
 
-            // Calculate Suhoor (Fajr - 45 mins)
-            let suhoorTime = "04:30"; // Default
-            if (isDynamic) {
-                // Ensure reliable parsing of time strings
+            // Calculate Suhoor
+            let suhoorTime = "04:30";
+            if (isDynamic && times.Fajr) {
                 const today = new Date().toISOString().split('T')[0];
                 const fajrDate = new Date(`${today}T${times.Fajr.split(' ')[0]}`);
-                // If date parsing fails, fallback
                 if (!isNaN(fajrDate.getTime())) {
                     fajrDate.setMinutes(fajrDate.getMinutes() - 45);
                     suhoorTime = fajrDate.toTimeString().slice(0, 5);
@@ -317,46 +326,45 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const scheduleRows = [
-                { time: suhoorTime, task: t.suhoor },
-                { time: times.Fajr.split(' ')[0], task: t.fajr },
-                { time: times.Sunrise.split(' ')[0], task: t.sunrise },
-                { time: "10:30", task: t.wakeUp },
-                { time: times.Dhuhr.split(' ')[0], task: t.dhuhr },
-                { time: "13:30", task: t.rest },
-                { time: times.Asr.split(' ')[0], task: t.asr },
-                { time: "17:00", task: t.quranTime },
-                { time: "17:45", task: t.walk },
-                { time: times.Maghrib.split(' ')[0], task: t.maghrib },
-                { time: times.Isha.split(' ')[0], task: t.isha },
-                { time: "21:30", task: t.workout },
-                { time: "22:30", task: t.postWorkout },
-                { time: "23:30", task: t.sleep }
+                { time: suhoorTime, task: t.suhoor || '' },
+                { time: (times.Fajr || '').split(' ')[0], task: t.fajr || '' },
+                { time: (times.Sunrise || '').split(' ')[0], task: t.sunrise || '' },
+                { time: "10:30", task: t.wakeUp || '' },
+                { time: (times.Dhuhr || '').split(' ')[0], task: t.dhuhr || '' },
+                { time: "13:30", task: t.rest || '' },
+                { time: (times.Asr || '').split(' ')[0], task: t.asr || '' },
+                { time: "17:00", task: t.quranTime || '' },
+                { time: "17:45", task: t.walk || '' },
+                { time: (times.Maghrib || '').split(' ')[0], task: t.maghrib || '' },
+                { time: (times.Isha || '').split(' ')[0], task: t.isha || '' },
+                { time: "21:30", task: t.workout || '' },
+                { time: "22:30", task: t.postWorkout || '' },
+                { time: "23:30", task: t.sleep || '' }
             ];
 
+            const titleText = (t.scheduleTitle || '').replace('🗓️ ', '');
             let dayHTML = `<div class="daily-card" data-day="${day}">`;
-            dayHTML += `<div class="daily-title">📅 ${t.scheduleTitle.replace('🗓️ ', '')} ${day}</div>`;
+            dayHTML += `<div class="daily-title">📅 ${titleText} ${day}</div>`;
             dayHTML += `<div class="table-wrapper"><table class="table-gold">`;
-            dayHTML += `<thead><tr><th>${t.scheduleTime}</th><th>${t.scheduleTask}</th></tr></thead>`;
+            dayHTML += `<thead><tr><th>${t.scheduleTime || ''}</th><th>${t.scheduleTask || ''}</th></tr></thead>`;
             dayHTML += `<tbody>`;
+
+            const dayKey = `day-${day}`;
             scheduleRows.forEach((item, index) => {
                 const taskId = `day-${day}-task-${index}`;
-                // Use SafeStorage logic here implicitly or via helper if redefined
-                // For simplicity in rendering loop, using localStorage directly but with check
-                const isChecked = SyncManager.get(taskId) === true ? 'checked' : '';
-
                 dayHTML += `
                 <tr>
-                    <td style="font-weight: 600; color: #2e241f; direction: ltr; width: 30%;" data-label="${t.scheduleTime}">${item.time}</td>
-                    <td style="text-align: ${currentLang === 'ar' ? 'right' : 'left'}; display: flex; align-items: center; justify-content: space-between;" data-label="${t.scheduleTask}">
+                    <td style="font-weight: 600; color: #2e241f; direction: ltr; width: 30%;" data-label="${t.scheduleTime || ''}">${item.time}</td>
+                    <td style="text-align: ${langCode === 'ar' ? 'right' : 'left'}; display: flex; align-items: center; justify-content: space-between;" data-label="${t.scheduleTask || ''}">
                         <span>${item.task}</span>
                         <label class="custom-checkbox">
-                            <input type="checkbox" id="${taskId}" name="${taskId}" ${isChecked} class="task-checkbox" data-day="${day}" data-task-index="${index}">
+                            <input type="checkbox" id="${taskId}" name="${taskId}" ${progressData[dayKey]?.tasks && progressData[dayKey].tasks[index] ? 'checked' : ''} class="task-checkbox" data-day="${day}" data-task-index="${index}">
                             <span class="checkmark"></span>
                         </label>
                     </td>
                 </tr>`;
             });
-            dayHTML += `</tbody></table></div></div>`;
+            dayHTML += `</tbody ></table ></div ></div > `;
             return dayHTML;
         };
 
@@ -406,19 +414,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const taskId = `day-${day}-task-${taskIndex}`;
                 const isChecked = e.target.checked;
 
-                // Update storage for persistence
-                SyncManager.save(taskId, isChecked);
-
                 // Update progress logic
                 trackTaskCompletion(day, taskIndex, isChecked);
             });
         });
     }
-
-    // Initial Render (Static)
-    renderSchedule();
-    renderWorkoutTable(); // Doubling down to ensure total sync
-    renderQuranTable();
 
     // Event Listener for Location
     if (locationBtn) {
@@ -459,7 +459,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function fetchPrayerTimes(lat, lon) {
+    // --- DDoS & API Throttling ---
+    let lastFetchTime = 0;
+    const FETCH_THROTTLE_MS = 60000; // 1 minute throttle for location updates
+
+    async function fetchPrayerTimes(lat, lon) {
+        const now = Date.now();
+        if (now - lastFetchTime < FETCH_THROTTLE_MS) {
+            console.warn("DDoS Mitigation: Prayer times request throttled.");
+            locationStatus.textContent = currentLang === 'ar'
+                ? "يرجى الانتظار دقيقة قبل تحديث الموقع مرة أخرى."
+                : "Please wait a minute before updating location again.";
+            return;
+        }
+
         const CACHE_KEY = 'prayer_times_cache';
         const CACHE_TIME_KEY = 'prayer_times_cache_time';
         const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
@@ -495,6 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.data && data.data.length > 0) {
                     SyncManager.save(CACHE_KEY, data.data); // Cache full month data
                     SyncManager.save(CACHE_TIME_KEY, Date.now().toString());
+                    lastFetchTime = Date.now();
                     updatePrayerTimesUI(data.data); // Pass full month data to update UI
                 } else {
                     throw new Error('Invalid API response format');
@@ -675,14 +689,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const totalTasks = 30 * 12; // 30 days × 12 tasks
         let completed = 0;
+        const progressData = getProgressData();
 
-        // Count all completed tasks from storage directly for accuracy
+        // Count from nested object for 100% accuracy
         for (let day = 1; day <= 30; day++) {
-            for (let taskIndex = 0; taskIndex < 12; taskIndex++) {
-                const taskId = `day-${day}-task-${taskIndex}`;
-                if (SyncManager.get(taskId) === true) {
-                    completed++;
-                }
+            const dayKey = `day-${day}`;
+            if (progressData[dayKey] && progressData[dayKey].tasks) {
+                completed += progressData[dayKey].tasks.filter(t => t === true).length;
             }
         }
 

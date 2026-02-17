@@ -54,7 +54,16 @@ export const translations = {
         // Certificate Banner
         certificateBannerTitle: "نظام شهادة الإنجاز",
         certificateBannerDesc: "أكمل 75% من المهام اليومية (9 من 12) لتحصل على شهادة إنجاز رمضانية فاخرة!",
-        tasksCompleted: "مهمة مكتملة"
+        tasksCompleted: "مهمة مكتملة",
+        affirmations: [
+            "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
+            "وَاصْبِرْ وَمَا صَبْرُكَ إِلَّا بِاللَّهِ",
+            "اللَّهُمَّ بَارِكْ لَنَا فِي شَهْرِ رَمَضَانَ",
+            "الصَّوْمُ جُنَّةٌ",
+            "مَنْ صَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ",
+            "اغتنم وقتك في طاعة الله",
+            "رمضان فرصة للتغيير للأفضل"
+        ]
     },
     en: {
         title: "Premium Ramadan Planner",
@@ -111,7 +120,16 @@ export const translations = {
         // Certificate Banner
         certificateBannerTitle: "Achievement Certificate System",
         certificateBannerDesc: "Complete 75% of daily tasks (9 out of 12) to earn a premium Ramadan achievement certificate!",
-        tasksCompleted: "tasks completed"
+        tasksCompleted: "tasks completed",
+        affirmations: [
+            "Indeed, with hardship comes ease",
+            "Be patient, for your patience is only by Allah",
+            "O Allah, bless us in the month of Ramadan",
+            "Fasting is a shield",
+            "Whoever fasts Ramadan out of faith and hope for reward will be forgiven his previous sins",
+            "Seize your time in obedience to Allah",
+            "Ramadan is an opportunity to change for the better"
+        ]
     }
 };
 
