@@ -47,12 +47,8 @@ body {
     direction: rtl;
     width: 100%;
     height: 100%;
-    /* App Shell: Lock body to viewport */
-    position: fixed;
-    top: 0;
-    left: 0;
     overflow: hidden;
-    touch-action: pan-y;
+    /* Prevent body-level scroll */
     -webkit-font-smoothing: antialiased;
 }
 
@@ -77,22 +73,21 @@ body {
     background: rgba(255, 255, 255, 0.95);
     border: 1px solid rgba(212, 175, 55, 0.15);
     box-shadow: var(--shadow-gold);
-    transform: none !important;
     width: 100%;
-    height: 100%;
-    /* App Shell: Handle scrolling here */
-    overflow-y: auto;
-    overflow-x: hidden;
-    overscroll-behavior-y: contain;
-    /* Prevent chain scrolling to body */
+    height: 100vh;
+    /* Fill viewport */
+    height: 100svh;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    /* Explicitly allow vertical touch here */
     padding: 10px;
     position: relative;
     z-index: 1;
-    /* GPU Promotion to eliminate jitter */
     transform: translate3d(0, 0, 0);
+    /* GPU Promotion */
     max-width: 100vw;
-    /* Phase 16: Hard horizontal lock */
     box-sizing: border-box;
 }
 
@@ -902,27 +897,9 @@ input#user-name::placeholder {
 /* Mobile-First Section Animation */
 section {
     animation: fadeInScale 0.6s ease-out backwards;
-    /* Removed preserve-3d for performance */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     will-change: transform, opacity;
     min-height: 100px;
-    /* CLS Fix for loading */
-}
-
-section:nth-child(1) {
-    animation-delay: 0.1s;
-}
-
-section:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-section:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-section:nth-child(4) {
-    animation-delay: 0.4s;
 }
 
 @keyframes fadeInScale {
@@ -937,101 +914,37 @@ section:nth-child(4) {
     }
 }
 
-/* Hover Effects - DISABLED ON TOUCH DEVICES */
-@media (hover: hover) and (pointer: fine) {
-    .table-gold:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.15);
-    }
-
-    .table-gold tr:hover {
-        background: linear-gradient(90deg, rgba(212, 175, 55, 0.08), transparent);
-    }
-
-    h1:hover,
-    h2:hover {
-        transform: scale(1.01);
-        text-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
-    }
-
-    button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(212, 175, 55, 0.25);
-    }
-
-    .lang-container select:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
-        border-color: var(--gold-secondary);
-    }
-}
-
-/* Gold Separator Pulse - Smoother */
-.gold-separator {
-    animation: pulse 3s ease-in-out infinite;
-    will-change: transform, opacity;
-}
-
-@keyframes pulse {
-
-    0%,
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    50% {
-        opacity: 0.9;
-        transform: scale(1.02);
-    }
-}
-
-/* Responsive Adjustments */
+/* MOBILE CONSOLIDATION PHASE 20 */
 @media (max-width: 768px) {
-
-    /* Strict overflow control for mobile */
     html {
         overflow-x: hidden;
         width: 100%;
+        max-width: 100vw;
     }
 
     body {
-        overflow-x: hidden !important;
+        position: fixed;
         width: 100%;
-        position: relative;
-        /* Dynamic viewport height fix for mobile browsers */
-        min-height: 100vh;
-        /* Fallback */
-        min-height: 100svh;
-        /* Modern browsers */
-        /* Mobile Tremor Fix: Remove heavy SVG background, use gradient */
-        background-image: none !important;
+        height: 100%;
+        overflow: hidden;
+        touch-action: pan-y;
         background: linear-gradient(135deg, #fefcf2 0%, #f9f4e0 100%);
     }
 
     .container {
-        width: 95%;
-        margin: 10px auto;
+        width: 100%;
+        max-width: 100vw;
+        height: 100%;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch;
         padding: 15px;
-        overflow: hidden;
-        /* STRICT CONTAINMENT: The magic fix for mobile scroll performance */
+        box-sizing: border-box;
         contain: content;
+        /* Performance lockdown */
     }
 
-    .premium-header h1 {
-        font-size: 1.5rem;
-        /* Reduced from 1.8rem for better fit */
-        word-wrap: break-word;
-        line-height: 1.3;
-        padding: 0 10px;
-    }
-
-    .daily-title {
-        font-size: 1.3rem;
-    }
-
-    /* GLOBAL ANIMATION KILL-SWITCH FOR MOBILE STABILITY */
-    /* If it moves, kill it. Zero jitter allowed. */
+    /* Animation Kill-switch for Mobile */
     *,
     .gold-separator,
     .cert-icon,
@@ -1043,17 +956,10 @@ section:nth-child(4) {
         transform: none !important;
     }
 
-    .container {
-        width: 100%;
-        max-width: 100vw;
-        height: 100%;
-        overflow-y: auto !important;
-        /* Restore vertical scroll */
-        overflow-x: hidden !important;
-        /* Block ghost swipe */
-        -webkit-overflow-scrolling: touch;
-        contain: content;
-        box-sizing: border-box;
+    .premium-header h1 {
+        font-size: 1.5rem;
+        word-wrap: break-word;
+        line-height: 1.3;
     }
 
     input#user-name {
@@ -1063,17 +969,19 @@ section:nth-child(4) {
         padding: 10px;
         box-sizing: border-box;
     }
+
+    /* Global touch targets */
+    input,
+    select,
+    a,
+    label,
+    button {
+        min-height: 44px;
+        touch-action: manipulation;
+    }
 }
 
-html,
-body {
-    scroll-behavior: auto !important;
-    /* Instant scroll response */
-}
-
-/* =========================================
-   UI-012: REDUCED MOTION SUPPORT
-   ========================================= */
+/* UI-012: REDUCED MOTION SUPPORT */
 @media (prefers-reduced-motion: reduce) {
 
     *,
@@ -1086,29 +994,6 @@ body {
     }
 }
 
-/* =========================================
-   UI-006: GLOBAL TOUCH TARGETS
-   ========================================= */
-input,
-select,
-a,
-label {
-    min-height: 44px;
-    touch-action: manipulation;
-}
-
-/* Desktop can override */
-@media (min-width: 768px) {
-
-    input,
-    select,
-    a,
-    label {
-        min-height: auto;
-    }
-}
-
-/* UI-001: Utility classes */
 .hidden {
     display: none !important;
 }
