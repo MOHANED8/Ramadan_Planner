@@ -1,87 +1,106 @@
-const CACHE_NAME = 'ramadan-planner-v14';
-const ASSETS_TO_CACHE = [
+/**
+ * RAMADAN PLANNER - ENTERPRISE SERVICE WORKER (v15)
+ * 
+ * Strategies:
+ * - HTML: Network-First (always fresh, offline fallback)
+ * - Assets (JS/CSS/Fonts): Stale-While-Revalidate (instant load, background update)
+ * - Images/Static: Cache-First (high performance)
+ */
+
+const VERSION = '15';
+const CACHE_PREFIX = 'ramadan-planner';
+const STATIC_CACHE = `${CACHE_PREFIX}-static-v${VERSION}`;
+const ASSET_CACHE = `${CACHE_PREFIX}-assets-v${VERSION}`;
+const IMAGE_CACHE = `${CACHE_PREFIX}-images`;
+
+const ASSETS_TO_PRECACHE = [
     './',
     './index.html',
-    './style.css',
+    './style.css?v=14',
     './certificate.css',
-    './js/app.js',
-    './js/translations.js',
-    './js/workouts.js',
     './manifest.json',
     './icon.svg'
 ];
 
-// Install Event - Cache Files
+// 1. INSTALL: Pre-cache core shell
 self.addEventListener('install', (event) => {
-    // Force the waiting service worker to become the active service worker
-    self.skipWaiting();
-
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => {
-                return cache.addAll(ASSETS_TO_CACHE);
-            })
+        caches.open(STATIC_CACHE).then((cache) => {
+            console.log('[SW] Pre-caching App Shell');
+            return cache.addAll(ASSETS_TO_PRECACHE);
+        }).then(() => self.skipWaiting()) // Force activation
     );
 });
 
-// Activate Event - Clean old caches
+// 2. ACTIVATE: Cleanup old caches
 self.addEventListener('activate', (event) => {
-    // Force the active service worker to take control of the page immediately
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
+        caches.keys().then((keys) => {
             return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheName !== CACHE_NAME) {
-                        console.log('[SW] Deleting old cache:', cacheName);
-                        return caches.delete(cacheName);
-                    }
-                })
-            ).then(() => self.clients.claim());
-        })
+                keys.filter(key => key.startsWith(CACHE_PREFIX) && key !== STATIC_CACHE && key !== ASSET_CACHE && key !== IMAGE_CACHE)
+                    .map(key => caches.delete(key))
+            );
+        }).then(() => self.clients.claim())
     );
 });
 
-// Fetch Event - Serve from Cache, fall back to Network
+// 3. FETCH: Hybrid Strategy
 self.addEventListener('fetch', (event) => {
-    // 1. Handle Google Fonts (Runtime Caching)
-    if (event.request.url.includes('googleapis.com') || event.request.url.includes('gstatic.com')) {
+    const { request } = event;
+    const url = new URL(request.url);
+
+    // A. HTML - Network First
+    if (request.mode === 'navigate') {
         event.respondWith(
-            caches.open('ramadan-planner-fonts').then((cache) => {
-                return cache.match(event.request).then((response) => {
-                    return response || fetch(event.request).then((networkResponse) => {
-                        cache.put(event.request, networkResponse.clone());
-                        return networkResponse;
-                    });
-                });
-            }).catch(() => {
-                // Return nothing or fallback if offline and not in cache
-                return new Response('', { status: 408, statusText: 'Request timed out' });
+            fetch(request)
+                .then((response) => {
+                    const copy = response.clone();
+                    caches.open(STATIC_CACHE).then(cache => cache.put(request, copy));
+                    return response;
+                })
+                .catch(() => caches.match(request))
+        );
+        return;
+    }
+
+    // B. Static Assets (JS, CSS, Fonts) - Stale While Revalidate
+    if (url.pathname.endsWith('.js') || url.pathname.endsWith('.css') || url.host.includes('fonts.gstatic.com')) {
+        event.respondWith(
+            caches.match(request).then((cached) => {
+                const networked = fetch(request).then((response) => {
+                    const copy = response.clone();
+                    caches.open(ASSET_CACHE).then(cache => cache.put(request, copy));
+                    return response;
+                }).catch(() => null);
+                return cached || networked;
             })
         );
         return;
     }
 
-    // 2. Handle App Shell & Local Assets
-    event.respondWith(
-        caches.match(event.request)
-            .then((response) => {
-                // If found in cache, return it
-                if (response) {
+    // C. Images - Cache First
+    if (request.destination === 'image') {
+        event.respondWith(
+            caches.match(request).then((cached) => {
+                return cached || fetch(request).then((response) => {
+                    const copy = response.clone();
+                    caches.open(IMAGE_CACHE).then(cache => cache.put(request, copy));
                     return response;
-                }
-
-                // If not in cache, fetch from network
-                return fetch(event.request).catch((error) => {
-                    // Check if the user is offline
-                    console.warn('[SW] Network request failed (offline):', event.request.url);
-
-                    // Optional: Return a custom offline page or JSON response if needed
-                    // For now, we'll return a 503 so the app can handle it gracefully instead of crashing
-                    return new Response(JSON.stringify({ error: "Network error (offline)" }), {
-                        status: 503,
-                        headers: { 'Content-Type': 'application/json' }
-                    });
                 });
             })
+        );
+        return;
+    }
+
+    // D. Default - Network with Cache Fallback
+    event.respondWith(
+        caches.match(request).then(cached => cached || fetch(request))
     );
+});
+
+// 4. MESSAGE: Handle update commands
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });
