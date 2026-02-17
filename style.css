@@ -32,8 +32,8 @@ html {
     overflow-y: auto;
     width: 100%;
     max-width: 100vw;
-    /* Hard lock */
-    overscroll-behavior: none;
+    /* Hard horizontal lock */
+    scroll-behavior: auto !important;
     -webkit-text-size-adjust: 100%;
 }
 
@@ -46,9 +46,9 @@ body {
     padding: 0;
     direction: rtl;
     width: 100%;
-    height: 100%;
-    overflow: hidden;
-    /* Prevent body-level scroll */
+    /* No height: 100% to allow natural scroll */
+    overflow-x: hidden !important;
+    overflow-y: visible;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -74,19 +74,14 @@ body {
     border: 1px solid rgba(212, 175, 55, 0.15);
     box-shadow: var(--shadow-gold);
     width: 100%;
-    height: 100vh;
-    /* Fill viewport */
-    height: 100svh;
-    overflow-y: auto !important;
+    /* Let container grow naturally */
     overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-    /* Explicitly allow vertical touch here */
+    overflow-y: visible;
     padding: 10px;
     position: relative;
     z-index: 1;
     transform: translate3d(0, 0, 0);
-    /* GPU Promotion */
+    /* GPU Promotion for rendering stability */
     max-width: 100vw;
     box-sizing: border-box;
 }
@@ -914,19 +909,21 @@ section {
     }
 }
 
-/* MOBILE CONSOLIDATION PHASE 20 */
+/* MOBILE CONSOLIDATION PHASE 21 */
 @media (max-width: 768px) {
-    html {
-        overflow-x: hidden;
+
+    html,
+    body {
+        overflow-x: hidden !important;
         width: 100%;
         max-width: 100vw;
     }
 
     body {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
+        /* Restore natural scroll model */
+        position: static;
+        height: auto;
+        overflow-y: visible;
         touch-action: pan-y;
         background: linear-gradient(135deg, #fefcf2 0%, #f9f4e0 100%);
     }
@@ -934,17 +931,15 @@ section {
     .container {
         width: 100%;
         max-width: 100vw;
-        height: 100%;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        -webkit-overflow-scrolling: touch;
+        height: auto;
+        overflow: visible;
         padding: 15px;
         box-sizing: border-box;
-        contain: content;
-        /* Performance lockdown */
+        contain: none;
+        /* Release containment to allow natural growth */
     }
 
-    /* Animation Kill-switch for Mobile */
+    /* Animation Kill-switch for Mobile Stability */
     *,
     .gold-separator,
     .cert-icon,
@@ -964,13 +959,11 @@ section {
 
     input#user-name {
         font-size: 16px !important;
-        /* Prevents iOS zoom jitter */
         width: 100%;
         padding: 10px;
         box-sizing: border-box;
     }
 
-    /* Global touch targets */
     input,
     select,
     a,
