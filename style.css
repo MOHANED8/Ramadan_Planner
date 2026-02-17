@@ -30,14 +30,11 @@
 html {
     overflow-x: hidden !important;
     overflow-y: auto;
-    /* Let browser handle vertical scroll naturally */
     width: 100%;
-    max-width: 100%;
-    /* Critical: Prevent horizontal expansion */
+    max-width: 100vw;
+    /* Hard lock */
     overscroll-behavior: none;
-    /* Prevent rubber-banding/bounce globally */
     -webkit-text-size-adjust: 100%;
-    /* Prevent font scaling on orientation change */
 }
 
 body {
@@ -94,7 +91,9 @@ body {
     z-index: 1;
     /* GPU Promotion to eliminate jitter */
     transform: translate3d(0, 0, 0);
-    will-change: scroll-position;
+    max-width: 100vw;
+    /* Phase 16: Hard horizontal lock */
+    box-sizing: border-box;
 }
 
 

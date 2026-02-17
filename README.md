@@ -137,7 +137,14 @@ This is a static site and can be deployed to any static host.
 - **Reduced Motion Support**: All animations respect OS-level motion preferences.
 - **Zero Inline Styles**: 100% separation of concerns for faster parsing and CSP compliance.
 
-## 10. Future Improvements
+## 10. Project Documentation & stability Reports
+
+For deep forensic analysis of the layout and stabilization efforts, see:
+- `forensic_tremor_report.md`: Detailed root-cause analysis of the "earthquake" issue.
+- `final_stabilization_plan.md`: The roadmap used to achieve zero-vibration performance.
+- `comprehensive_tremor_analysis.md`: Analysis of runtime vs. idle vibrations.
+
+## 11. Future Improvements
 
 - **Login/Sync**: Optional cloud sync for cross-device progress.
 - **Push Notifications**: Reminders for prayer times and Suhoor.
