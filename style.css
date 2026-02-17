@@ -30,12 +30,13 @@ body {
     direction: rtl;
     min-height: 100vh;
     scroll-behavior: smooth;
-    /* perspective removed for smooth scrolling */
     overflow-x: hidden;
-    /* Mobile scroll optimization */
+    /* Critical for scroll stability */
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
     overscroll-behavior-x: none;
+    width: 100%;
+    position: relative;
 }
 
 .container {
@@ -46,9 +47,7 @@ body {
     border-radius: 15px;
     box-shadow: var(--shadow-soft);
     backdrop-filter: blur(10px);
-    /* transform-style removed for better scroll performance */
     animation: fadeInUp 0.8s ease-out;
-    /* Add performance optimization */
     will-change: transform, opacity;
     isolation: isolate;
 }
@@ -56,12 +55,12 @@ body {
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(30px) rotateX(5deg);
+        transform: translateY(30px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0) rotateX(0);
+        transform: translateY(0);
     }
 }
 
@@ -527,7 +526,8 @@ input#user-name::placeholder {
 section {
     animation: fadeInScale 0.6s ease-out backwards;
     /* Removed preserve-3d for performance */
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform, opacity;
 }
 
 section:nth-child(1) {
@@ -549,7 +549,7 @@ section:nth-child(4) {
 @keyframes fadeInScale {
     from {
         opacity: 0;
-        transform: scale(0.98) translateY(20px);
+        transform: scale(0.98) translateY(10px);
     }
 
     to {
@@ -558,31 +558,23 @@ section:nth-child(4) {
     }
 }
 
-/* Hover Effects - Only for devices with hover capability */
-@media (hover: hover) {
+/* Hover Effects - DISABLED ON TOUCH DEVICES */
+@media (hover: hover) and (pointer: fine) {
     .table-gold:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.15);
-    }
-
-    .table-gold tr:hover {
-        background: linear-gradient(90deg, rgba(212, 175, 55, 0.08), transparent);
-    }
-
-    h1:hover,
-    h2:hover {
-        transform: scale(1.01);
-        text-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.15);
     }
 
     button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+        box-shadow: 0 6px 15px rgba(212, 175, 55, 0.25);
     }
 }
 
+/* Gold Separator Pulse - Smoother */
 .gold-separator {
     animation: pulse 3s ease-in-out infinite;
+    will-change: transform, opacity;
 }
 
 @keyframes pulse {
@@ -594,29 +586,49 @@ section:nth-child(4) {
     }
 
     50% {
-        opacity: 0.85;
+        opacity: 0.9;
         transform: scale(1.02);
     }
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-    .premium-header h1 {
-        font-size: 2rem;
-    }
 
-    .daily-title {
-        font-size: 1.4rem;
+    /* Strict overflow control for mobile */
+    html,
+    body {
+        overflow-x: hidden !important;
+        width: 100%;
+        position: relative;
     }
 
     .container {
+        width: 95%;
+        margin: 10px auto;
         padding: 15px;
+        overflow: hidden;
+        /* Contains children */
+    }
+
+    .premium-header h1 {
+        font-size: 1.8rem;
+        word-wrap: break-word;
+    }
+
+    .daily-title {
+        font-size: 1.3rem;
+    }
+
+    input,
+    select,
+    button {
+        max-width: 100%;
     }
 
     input#user-name {
-        font-size: 1.4rem;
-        min-width: unset;
+        font-size: 1.2rem;
         width: 100%;
-        padding: 10px 20px;
+        padding: 10px;
+        box-sizing: border-box;
     }
 }
