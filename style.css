@@ -54,19 +54,105 @@ body {
     transition: opacity 0.3s ease;
 }
 
+/* Professional Container */
 .container {
+    background: rgba(255, 255, 255, 0.95);
+    /* Mobile Tremor Fix: Simplified backdrop */
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    box-shadow: var(--shadow-gold);
+    transform: none !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 95%;
     max-width: 1200px;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 30px;
+    margin: 20px auto;
+    padding: 15px;
+    /* Mobile optimized padding */
+
+    /* Mobile Viewport Fix */
+    min-height: calc(100svh - 40px);
     border-radius: 15px;
-    box-shadow: var(--shadow-soft);
-    backdrop-filter: blur(10px);
-    animation: fadeInUp 0.8s ease-out;
-    will-change: transform, opacity;
     isolation: isolate;
-    min-height: 80vh;
-    /* Prevent collapse */
+}
+
+@media (min-width: 768px) {
+    .container {
+        padding: 40px;
+        width: 90%;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+}
+
+/* =========================================
+   MOBILE CARD VIEW TRANSFORMATION
+   ========================================= */
+@media (max-width: 768px) {
+
+    /* Hide table headers on mobile */
+    .table-gold thead {
+        display: none;
+    }
+
+    /* Make rows look like cards */
+    .table-gold tr {
+        display: flex;
+        flex-direction: column;
+        background: white;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eee;
+        padding: 1rem;
+    }
+
+    /* Flex each cell to show label + value */
+    .table-gold td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f8f8f8;
+        font-size: 1rem;
+    }
+
+    .table-gold td:last-child {
+        border-bottom: none;
+    }
+
+    /* Inject labels from data attributes */
+    .table-gold td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: var(--gold-secondary);
+        margin-left: 10px;
+        /* RTL override handled below */
+    }
+
+    /* RTL Adjustments for Arabic */
+    html[dir="rtl"] .table-gold td::before {
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 10px;
+    }
+
+    /* Fix Input Sizes in Card View */
+    .quran-input {
+        width: 100px !important;
+        text-align: center;
+    }
+
+    /* Ensure touch targets are huge */
+    button,
+    input[type="checkbox"],
+    select,
+    input {
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation;
+        /* Disable double-tap zoom delay */
+    }
 }
 
 @keyframes fadeInUp {

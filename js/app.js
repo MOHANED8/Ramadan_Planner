@@ -158,12 +158,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const dayData = quranData[`day${i}`] || { from: '', to: '' };
 
             rows += `<tr>
-                <td style="width: 20%;">${t.quranDay} ${i}</td>
-                <td>
+                <td style="width: 20%;" data-label="${t.quranDay}">${t.quranDay} ${i}</td>
+                <td data-label="${t.quranFrom}">
                     <input type="number" class="quran-input" data-day="${i}" data-type="from" 
                            placeholder="${t.quranFrom}" min="1" max="${MAX_PAGE}" value="${dayData.from}">
                 </td>
-                <td>
+                <td data-label="${t.quranTo}">
                     <input type="number" class="quran-input" data-day="${i}" data-type="to" 
                            placeholder="${t.quranTo}" min="1" max="${MAX_PAGE}" value="${dayData.to}">
                 </td>
@@ -222,9 +222,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let rows = '';
         workoutData.forEach(item => {
             rows += `<tr>
-                <td>${t.workoutDay} ${item.day}</td>
-                <td>${item.focus}</td>
-                <td>${item.details}</td>
+                <td data-label="${t.workoutDay}">${t.workoutDay} ${item.day}</td>
+                <td data-label="${t.workoutFocus}">${item.focus}</td>
+                <td data-label="${t.workoutDetails}">${item.details}</td>
             </tr>`;
         });
         sportsBody.innerHTML = rows;
@@ -252,7 +252,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const isDynamic = apiTimings.length > 0;
         const t = translations[currentLang];
 
-        for (let day = 1; day <= 30; day++) {
+        // Efficient rendering using DocumentFragment
+        const fragment = document.createDocumentFragment();
+
+        // Lazy Loading / Virtualization Lite
+        // We will render placeholders first, then content when visible
+        const createPlaceholder = (day) => {
+            const div = document.createElement('div');
+            div.className = 'daily-card-placeholder';
+            div.dataset.day = day;
+            div.style.minHeight = '200px';
+            div.innerHTML = `<div class="loading-spinner">⏳ Loading Day ${day}...</div>`;
+            return div;
+        };
+
+        // Render logic for a single day (extracted)
+        const generateDayHTML = (day) => {
             // Get timings for this day (or fallback to default)
             const times = isDynamic ? apiTimings[(day - 1) % apiTimings.length].timings : defaultTimings;
 
@@ -286,22 +301,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 { time: "23:30", task: t.sleep }
             ];
 
-            allDaysHTML += `<div class="daily-card">`;
-            allDaysHTML += `<div class="daily-title">📅 ${t.scheduleTitle.replace('🗓️ ', '')} ${day}</div>`;
-            allDaysHTML += `<div class="table-wrapper"><table class="table-gold">`;
-            allDaysHTML += `<thead><tr><th>${t.scheduleTime}</th><th>${t.scheduleTask}</th></tr></thead>`;
-            allDaysHTML += `<tbody>`;
+            let dayHTML = `<div class="daily-card" data-day="${day}">`;
+            dayHTML += `<div class="daily-title">📅 ${t.scheduleTitle.replace('🗓️ ', '')} ${day}</div>`;
+            dayHTML += `<div class="table-wrapper"><table class="table-gold">`;
+            dayHTML += `<thead><tr><th>${t.scheduleTime}</th><th>${t.scheduleTask}</th></tr></thead>`;
+            dayHTML += `<tbody>`;
             scheduleRows.forEach((item, index) => {
                 const taskId = `day-${day}-task-${index}`;
-
                 // Use SafeStorage logic here implicitly or via helper if redefined
                 // For simplicity in rendering loop, using localStorage directly but with check
                 const isChecked = localStorage.getItem(taskId) === 'true' ? 'checked' : '';
 
-                allDaysHTML += `
+                dayHTML += `
                 <tr>
-                    <td style="font-weight: 600; color: #2e241f; direction: ltr; width: 30%;">${item.time}</td>
-                    <td style="text-align: ${currentLang === 'ar' ? 'right' : 'left'}; display: flex; align-items: center; justify-content: space-between;">
+                    <td style="font-weight: 600; color: #2e241f; direction: ltr; width: 30%;" data-label="${t.scheduleTime}">${item.time}</td>
+                    <td style="text-align: ${currentLang === 'ar' ? 'right' : 'left'}; display: flex; align-items: center; justify-content: space-between;" data-label="${t.scheduleTask}">
                         <span>${item.task}</span>
                         <label class="custom-checkbox">
                             <input type="checkbox" id="${taskId}" ${isChecked} class="task-checkbox" data-day="${day}" data-task-index="${index}">
@@ -310,16 +324,43 @@ document.addEventListener('DOMContentLoaded', () => {
                     </td>
                 </tr>`;
             });
-            allDaysHTML += `</tbody></table></div></div>`;
-            allDaysHTML += `</tbody></table></div></div>`;
+            dayHTML += `</tbody></table></div></div>`;
+            return dayHTML;
+        };
+
+        // Clear container
+        daysContainer.innerHTML = '';
+
+        // Observer for lazy loading
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const placeholder = entry.target;
+                    const day = placeholder.dataset.day;
+                    const html = generateDayHTML(day);
+
+                    // Replace placeholder with actual content
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = html;
+                    const newContent = tempDiv.firstElementChild;
+
+                    placeholder.replaceWith(newContent);
+                    obs.unobserve(placeholder);
+
+                    // Re-attach listeners just for this new card
+                    attachCheckboxListeners();
+                }
+            });
+        }, { rootMargin: "200px" }); // Pre-load 200px before viewport
+
+        // Append placeholders
+        for (let day = 1; day <= 30; day++) {
+            const placeholder = createPlaceholder(day);
+            fragment.appendChild(placeholder);
+            observer.observe(placeholder);
         }
 
-        // Performance: Render in next frame to avoid blocking
-        requestAnimationFrame(() => {
-            daysContainer.innerHTML = allDaysHTML;
-            // Re-attach listeners to new checkboxes
-            attachCheckboxListeners();
-        });
+        daysContainer.appendChild(fragment);
     }
 
     function attachCheckboxListeners() {
