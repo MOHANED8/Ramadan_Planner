@@ -135,9 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 2. Daily Affirmations ---
     function updateAffirmation() {
         const t = translations[currentLang];
-        const affs = (t && t.affirmations) ? t.affirmations : affirmations; // Fallback to raw array if missing
+        const affs = (t && t.affirmations) ? t.affirmations : affirmations;
 
-        // Use a simple seed based on the day of the year to keep it consistent for one day
         const now = new Date();
         const start = new Date(now.getFullYear(), 0, 0);
         const diff = now - start;
@@ -151,6 +150,24 @@ document.addEventListener('DOMContentLoaded', () => {
             verseContainer.innerHTML = `✨ ${randomAff} ✨`;
         }
     }
+
+    // --- 2.5 Global Asset Preloader ---
+    function initPreloader() {
+        const assets = [
+            './style.css',
+            './certificate.css',
+            './js/translations.js',
+            './js/workouts.js'
+        ];
+        assets.forEach(asset => {
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = asset;
+            document.head.appendChild(link);
+        });
+    }
+
+    initPreloader();
 
     // --- 3. Quran Tracker Table ---
     const quranBody = document.getElementById('quran-table-body');

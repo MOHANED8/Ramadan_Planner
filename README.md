@@ -47,12 +47,13 @@ The project follows a modular ES6+ architecture for maintainability and performa
 /
 ├── index.html          # Main application entry point
 ├── style.css           # Core styling and layout
-├── style-3d.css        # 3D animations and transforms
+├── index.html          # Main application entry point
+├── style.css           # Core styling, layout, and animations
 ├── certificate.css     # Certificate modal styling
 ├── manifest.json       # PWA configuration
 ├── sw.js               # Service Worker for offline support
 └── js/                 # Application Logic Modules
-    ├── app.js          # Core logic (State, Events, UI Rendering)
+    ├── app.js          # Core logic (State, Events, UI Rendering, Preloader)
     ├── translations.js # Localization strings (AR/EN)
     └── workouts.js     # Fitness program data
 ```
