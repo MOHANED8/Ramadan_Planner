@@ -98,6 +98,7 @@ body {
         width: 90%;
         margin: 20px auto;
         background: rgba(255, 255, 255, 0.9);
+        /* Mobile blur disabled to stop tremors */
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
     }
@@ -468,7 +469,8 @@ input#user-name {
     min-width: 200px;
     box-shadow: 0 4px 8px rgba(180, 130, 50, 0.2);
     outline: none;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+    /* Phase 16: Avoid width transition jitter */
     cursor: text;
 }
 
@@ -750,7 +752,7 @@ input#user-name::placeholder {
 
 /* Print Specifics */
 /* Hatmah Doa Modal */
-.modal {
+#hatmah-modal {
     display: flex;
     position: fixed;
     z-index: 2000;
@@ -758,12 +760,18 @@ input#user-name::placeholder {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.8);
+    /* Darkened for accessibility */
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(5px);
     opacity: 1;
     transition: opacity 0.3s ease;
+}
+
+@media (min-width: 768px) {
+    #hatmah-modal {
+        backdrop-filter: blur(5px);
+    }
 }
 
 .modal.hidden {
