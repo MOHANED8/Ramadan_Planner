@@ -50,7 +50,7 @@
             </div>
 
             <!-- Location & Prayer Times Control -->
-            <div class="location-control no-print" style="margin-top: 15px;">
+            <div class="location-control no-print" style="margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                 <button id="btn-location" style="
                     background: var(--gold-primary); 
                     color: white; 
@@ -62,7 +62,21 @@
                     font-weight: bold;" data-i18n="locationBtn">
                     📍 تحديد موقعي (أوقات الصلاة)
                 </button>
-                <div id="location-status" style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);"></div>
+                
+                <button id="btn-install" style="
+                    display: none;
+                    background: var(--gold-secondary); 
+                    color: white; 
+                    border: none; 
+                    padding: 8px 20px; 
+                    border-radius: 20px; 
+                    font-family: 'Cairo'; 
+                    cursor: pointer; 
+                    font-weight: bold;">
+                    📲 تثبيت التطبيق
+                </button>
+                
+                <div id="location-status" style="width: 100%; margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);"></div>
             </div>
 
             <!-- Daily Affirmation -->
