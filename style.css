@@ -28,11 +28,8 @@
 }
 
 html {
-    height: -webkit-fill-available;
-    /* Fill viewport height on iOS */
-    overflow-x: hidden;
-    overflow-y: auto;
-    width: 100%;
+    overflow: visible !important;
+    height: auto !important;
     scroll-behavior: auto !important;
     -webkit-text-size-adjust: 100%;
 }
@@ -47,9 +44,7 @@ body {
     direction: rtl;
     width: 100%;
     min-height: 100vh;
-    min-height: -webkit-fill-available;
-    overflow-x: hidden;
-    overflow-y: visible;
+    overflow: visible !important;
     position: relative;
     -webkit-font-smoothing: antialiased;
 }
