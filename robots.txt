@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Allow: /ads.txt
+Allow: /index.html
+Sitemap: https://ramadanplannermo.netlify.app/sitemap.xml
