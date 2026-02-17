@@ -735,6 +735,9 @@ section:nth-child(4) {
         position: relative;
         /* Dynamic viewport height fix for mobile browsers */
         min-height: 100svh;
+        /* Mobile Tremor Fix: Remove heavy SVG background, use gradient */
+        background-image: none !important;
+        background: linear-gradient(135deg, #fefcf2 0%, #f9f4e0 100%);
     }
 
     .container {

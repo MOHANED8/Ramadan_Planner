@@ -768,8 +768,10 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
+        const isMobile = window.innerWidth < 768;
+        const particleCount = isMobile ? 60 : 150; // Reduce load on mobile
         const particles = [];
-        for (let i = 0; i < 150; i++) {
+        for (let i = 0; i < particleCount; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height - canvas.height,
@@ -837,12 +839,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Close certificate
     const closeBtn = document.getElementById('close-cert');
     if (closeBtn) {
         closeBtn.addEventListener('click', () => {
             const modal = document.getElementById('certificate-modal');
             if (modal) modal.style.display = 'none';
+            // Stop confetti immediately
+            const canvas = document.getElementById('confetti-canvas');
+            if (canvas) canvas.style.display = 'none';
         });
     }
 
