@@ -81,7 +81,10 @@ body {
     /* Mobile optimized padding */
 
     /* Mobile Viewport Fix */
+    min-height: calc(100vh - 40px);
+    /* Fallback for older browsers */
     min-height: calc(100svh - 40px);
+    /* Modern browsers */
     border-radius: 15px;
     isolation: isolate;
 }
@@ -748,7 +751,10 @@ section:nth-child(4) {
         width: 100%;
         position: relative;
         /* Dynamic viewport height fix for mobile browsers */
+        min-height: 100vh;
+        /* Fallback */
         min-height: 100svh;
+        /* Modern browsers */
         /* Mobile Tremor Fix: Remove heavy SVG background, use gradient */
         background-image: none !important;
         background: linear-gradient(135deg, #fefcf2 0%, #f9f4e0 100%);

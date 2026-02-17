@@ -875,7 +875,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 deferredPrompt.prompt();
                 // Wait for the user to respond to the prompt
                 const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to the install prompt: ${outcome}`);
                 // We've used the prompt, and can't use it again, throw it away
                 deferredPrompt = null;
                 installBtn.style.display = 'none';
@@ -890,6 +889,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // Clear the deferredPrompt so it can be garbage collected
         deferredPrompt = null;
-        console.log('PWA was installed');
     });
 });
