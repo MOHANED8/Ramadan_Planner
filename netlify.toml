@@ -1,6 +1,7 @@
 [build]
   publish = "."
-  command = "echo 'No build command needed'"
+  command = "exit 0" # Explicitly tell Netlify not to build anything
+  ignore = "git diff --quiet HEAD^ HEAD ." # Optional: prevent build if no changes, but 'exit 0' is safer
 
 [[headers]]
   for = "/*"
