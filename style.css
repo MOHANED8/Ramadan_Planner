@@ -673,6 +673,33 @@ section:nth-child(4) {
     select,
     button {
         max-width: 100%;
+
+        /* Mobile Tremor Fix: Disable heavy GPU effects */
+        .gold-separator {
+            animation: none !important;
+            transform: none !important;
+        }
+
+        .premium-header,
+        section {
+            animation: none !important;
+            transition: none !important;
+        }
+
+        .container {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            box-shadow: none !important;
+            transform: none !important;
+            will-change: auto !important;
+            /* Release GPU memory */
+        }
+
+        /* Input zoom fix */
+        input#user-name {
+            font-size: 16px !important;
+            /* Prevents iOS zoom */
+        }
     }
 
     input#user-name {
