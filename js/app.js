@@ -6,11 +6,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 0. Multilingual Support ---
     const STORAGE_KEY_LANG = 'ramadan_planner_lang';
-    let currentLang = localStorage.getItem(STORAGE_KEY_LANG) || 'ar'; // Default Arabic
+
+    // --- 0.5. Enterprise Sync Manager (Core Data Layer) ---
+    const SyncManager = {
+        async save(key, value) {
+            try {
+                const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
+                localStorage.setItem(key, stringValue);
+
+                // Cloud sync hook (Placeholder for Netlify DB / Connect)
+                if (navigator.onLine) {
+                    // console.log(`[SyncManager] Syncing ${key} to cloud...`);
+                    // Future integration: await fetch('/api/sync', { method: 'POST', body: ... })
+                }
+                return true;
+            } catch (e) {
+                console.error(`[SyncManager] Save fail for ${key}:`, e);
+                return false;
+            }
+        },
+        get(key, defaultValue = null) {
+            try {
+                const value = localStorage.getItem(key);
+                if (value === null) return defaultValue;
+                try {
+                    return JSON.parse(value);
+                } catch {
+                    return value;
+                }
+            } catch (e) {
+                console.error(`[SyncManager] Get fail for ${key}:`, e);
+                return defaultValue;
+            }
+        },
+        remove(key) {
+            try {
+                localStorage.removeItem(key);
+                return true;
+            } catch (e) {
+                console.error(`[SyncManager] Remove fail:`, e);
+                return false;
+            }
+        }
+    };
+
+    let currentLang = SyncManager.get(STORAGE_KEY_LANG) || 'ar'; // Default Arabic
 
     function updateLanguage(lang) {
         currentLang = lang;
-        localStorage.setItem(STORAGE_KEY_LANG, lang);
+        SyncManager.save(STORAGE_KEY_LANG, lang);
 
         // Update Direction
         document.documentElement.lang = lang;
@@ -45,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const STORAGE_KEY_NAME = 'ramadan_planner_name';
 
     // Load saved name
-    const savedName = localStorage.getItem(STORAGE_KEY_NAME);
+    const savedName = SyncManager.get(STORAGE_KEY_NAME);
     if (savedName) {
         nameInput.value = savedName;
     }
@@ -53,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Save name on input change
     if (nameInput) {
         nameInput.addEventListener('input', (e) => {
-            localStorage.setItem(STORAGE_KEY_NAME, e.target.value);
+            SyncManager.save(STORAGE_KEY_NAME, e.target.value);
         });
     }
 
@@ -123,27 +167,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Consolidated Quran Tracker Storage
-    const QURAN_STORAGE_KEY = 'quran_tracker_data';
+    const QURAN_STORAGE_KEY = 'ramadan_planner_quran';
 
     function getQuranData() {
-        const data = localStorage.getItem(QURAN_STORAGE_KEY);
-        if (data) {
-            try {
-                return JSON.parse(data);
-            } catch (e) {
-                console.error('Quran data parse error:', e);
-                return {};
-            }
-        }
-        return {};
+        return SyncManager.get(QURAN_STORAGE_KEY, {});
     }
 
     function saveQuranData(data) {
-        try {
-            localStorage.setItem(QURAN_STORAGE_KEY, JSON.stringify(data));
-        } catch (e) {
-            console.error('Quran data save error:', e);
-        }
+        SyncManager.save(QURAN_STORAGE_KEY, data);
     }
 
     function renderQuranTable() {
@@ -160,11 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
             rows += `<tr>
                 <td style="width: 20%;" data-label="${t.quranDay}">${t.quranDay} ${i}</td>
                 <td data-label="${t.quranFrom}">
-                    <input type="number" class="quran-input" data-day="${i}" data-type="from" 
+                    <input type="number" class="quran-input" id="quran-day-${i}-from" name="quran-day-${i}-from" data-day="${i}" data-type="from" 
                            placeholder="${t.quranFrom}" min="1" max="${MAX_PAGE}" value="${dayData.from}">
                 </td>
                 <td data-label="${t.quranTo}">
-                    <input type="number" class="quran-input" data-day="${i}" data-type="to" 
+                    <input type="number" class="quran-input" id="quran-day-${i}-to" name="quran-day-${i}-to" data-day="${i}" data-type="to" 
                            placeholder="${t.quranTo}" min="1" max="${MAX_PAGE}" value="${dayData.to}">
                 </td>
             </tr>`;
@@ -207,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial Render
     renderQuranTable();
+    renderWorkoutTable();
 
     // --- 4. Workout Program ---
     const sportsBody = document.getElementById('sports-table-body');
@@ -310,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const taskId = `day-${day}-task-${index}`;
                 // Use SafeStorage logic here implicitly or via helper if redefined
                 // For simplicity in rendering loop, using localStorage directly but with check
-                const isChecked = localStorage.getItem(taskId) === 'true' ? 'checked' : '';
+                const isChecked = SyncManager.get(taskId) === true ? 'checked' : '';
 
                 dayHTML += `
                 <tr>
@@ -318,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td style="text-align: ${currentLang === 'ar' ? 'right' : 'left'}; display: flex; align-items: center; justify-content: space-between;" data-label="${t.scheduleTask}">
                         <span>${item.task}</span>
                         <label class="custom-checkbox">
-                            <input type="checkbox" id="${taskId}" ${isChecked} class="task-checkbox" data-day="${day}" data-task-index="${index}">
+                            <input type="checkbox" id="${taskId}" name="${taskId}" ${isChecked} class="task-checkbox" data-day="${day}" data-task-index="${index}">
                             <span class="checkmark"></span>
                         </label>
                     </td>
@@ -375,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const isChecked = e.target.checked;
 
                 // Update storage for persistence
-                SafeStorage.setItem(taskId, isChecked);
+                SyncManager.save(taskId, isChecked);
 
                 // Update progress logic
                 trackTaskCompletion(day, taskIndex, isChecked);
@@ -385,6 +417,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial Render (Static)
     renderSchedule();
+    renderWorkoutTable(); // Doubling down to ensure total sync
+    renderQuranTable();
 
     // Event Listener for Location
     if (locationBtn) {
@@ -431,8 +465,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
         // Check cache first
-        const cachedData = localStorage.getItem(CACHE_KEY);
-        const cacheTime = localStorage.getItem(CACHE_TIME_KEY);
+        const cachedData = SyncManager.get(CACHE_KEY);
+        const cacheTime = SyncManager.get(CACHE_TIME_KEY);
 
         if (cachedData && cacheTime && (Date.now() - parseInt(cacheTime)) < CACHE_DURATION) {
             // Use cached data
@@ -459,8 +493,8 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(data => {
                 if (data.data && data.data.length > 0) {
-                    localStorage.setItem(CACHE_KEY, JSON.stringify(data.data)); // Cache full month data
-                    localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
+                    SyncManager.save(CACHE_KEY, data.data); // Cache full month data
+                    SyncManager.save(CACHE_TIME_KEY, Date.now().toString());
                     updatePrayerTimesUI(data.data); // Pass full month data to update UI
                 } else {
                     throw new Error('Invalid API response format');
@@ -506,44 +540,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const STORAGE_KEY_PROGRESS = 'ramadan_daily_progress';
     const CERT_STORAGE_KEY = 'certificates_awarded';
 
-    // Safe localStorage wrapper with error handling
-    const SafeStorage = {
-        setItem(key, value) {
-            try {
-                localStorage.setItem(key, value);
-                return true;
-            } catch (e) {
-                console.error('localStorage.setItem failed:', e);
-                if (e.name === 'QuotaExceededError') {
-                    alert('Storage quota exceeded. Please clear some data.');
-                } else {
-                    // console.warn('Failed to save data to localStorage');
-                }
-                return false;
-            }
-        },
-
-        getItem(key, defaultValue = null) {
-            try {
-                const value = localStorage.getItem(key);
-                return value !== null ? value : defaultValue;
-            } catch (e) {
-                console.error('localStorage.getItem failed:', e);
-                return defaultValue;
-            }
-        },
-
-        removeItem(key) {
-            try {
-                localStorage.removeItem(key);
-                return true;
-            } catch (e) {
-                console.error('localStorage.removeItem failed:', e);
-                return false;
-            }
-        }
-    };
-
     // --- Streak System ---
     function updateStreak() {
         // Calculate current streak based on daily progress
@@ -574,13 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Certificate tracking functions
     function getCertificatesAwarded() {
-        try {
-            const data = SafeStorage.getItem(CERT_STORAGE_KEY, '{}');
-            return JSON.parse(data);
-        } catch (e) {
-            console.error('Error reading certificates:', e);
-            return {};
-        }
+        return SyncManager.get(CERT_STORAGE_KEY, {});
     }
 
     function markCertificateAwarded(day, percentage) {
@@ -590,7 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
             timestamp: Date.now(),
             percentage: percentage
         };
-        SafeStorage.setItem(CERT_STORAGE_KEY, JSON.stringify(certs));
+        SyncManager.save(CERT_STORAGE_KEY, certs);
     }
 
     function hasCertificateBeenAwarded(day) {
@@ -600,13 +590,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Get or initialize progress data
     function getProgressData() {
-        const data = SafeStorage.getItem(STORAGE_KEY_PROGRESS);
-        return data ? JSON.parse(data) : {};
+        return SyncManager.get(STORAGE_KEY_PROGRESS, {});
     }
 
     // Save progress data
     function saveProgressData(data) {
-        SafeStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(data));
+        SyncManager.save(STORAGE_KEY_PROGRESS, data);
     }
 
     // Track task completion
@@ -691,7 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let day = 1; day <= 30; day++) {
             for (let taskIndex = 0; taskIndex < 12; taskIndex++) {
                 const taskId = `day-${day}-task-${taskIndex}`;
-                if (localStorage.getItem(taskId) === 'true') {
+                if (SyncManager.get(taskId) === true) {
                     completed++;
                 }
             }

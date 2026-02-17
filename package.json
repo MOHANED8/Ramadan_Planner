@@ -10,8 +10,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "@netlify/blobs": "^10.7.0",
+    "drizzle-orm": "^0.45.1"
+  },
   "devDependencies": {
-      "lite-server": "^2.6.1"
+    "drizzle-kit": "^0.31.9",
+    "lite-server": "^2.6.1"
   }
 }
