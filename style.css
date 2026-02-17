@@ -42,8 +42,8 @@ body {
     line-height: 1.6;
     padding: 20px;
     direction: rtl;
-    min-height: 100svh;
-    min-height: 100svh;
+    min-height: 100vh;
+    /* Reverted to vh for maximum stability */
     width: 100%;
     max-width: 100%;
     /* Critical: Prevent horizontal expansion */
