@@ -541,6 +541,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // --- Streak System ---
+    function updateStreak() {
+        // Calculate current streak based on daily progress
+        let streak = 0;
+        const progress = getProgressData();
+        const today = new Date(); // In a real app we'd need robust date handling matching the planner's "Day 1" logic
+
+        // Simple logic: Scan days 1 to 30, find consecutive days with >0 tasks
+        // For this planner (which is 30 fixed days), we'll Just count total active days for now as "Consistency Score"
+        // making it robust for a static 30-day planner is tricky without real dates.
+        // Let's stick to "Total Active Days" as a proxy for engagement.
+        let activeDays = 0;
+        for (let i = 1; i <= 30; i++) {
+            const dayKey = `day-${i}`;
+            if (progress[dayKey] && progress[dayKey].tasks && progress[dayKey].tasks.some(t => t)) {
+                activeDays++;
+            }
+        }
+
+        const streakEl = document.getElementById('streak-counter');
+        if (streakEl) {
+            streakEl.innerHTML = `🔥 ${activeDays} <span style="font-size:0.8em; opacity:0.8">يوم نشط</span>`;
+        }
+    }
+
+    // Call updateStreak whenever progress changes
+
+
     // Certificate tracking functions
     function getCertificatesAwarded() {
         try {
@@ -598,6 +626,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         checkCertificateEligibility(day);
         updateGlobalProgress();
+        updateStreak();
     }
 
     // Calculate day progress
