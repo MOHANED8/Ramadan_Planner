@@ -983,3 +983,105 @@ section {
 .hidden {
     display: none !important;
 }
+
+/* =========================================
+   UI-013: DARK MODE & ACCESSIBILITY
+   ========================================= */
+
+/* High Contrast tweaks for base theme */
+.btn-primary, .btn-secondary, button {
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4); 
+}
+
+/* Dark Theme Variables */
+:root[data-theme="dark"] {
+    --gold-primary: #d4af37;
+    --gold-secondary: #ebd07b;
+    --gold-light: #594921;
+    --cream-bg: #121212;
+    --text-dark: #f0f0f0;
+    --text-muted: #b0b0b0;
+    --white: #1e1e1e;
+    --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.5);
+    --shadow-gold: 0 8px 20px rgba(212, 175, 55, 0.05);
+}
+
+:root[data-theme="dark"] body {
+    background: #121212;
+}
+
+:root[data-theme="dark"] .container {
+    background: rgba(30,30,30,0.9);
+    border-color: rgba(212,175,55,0.3);
+}
+
+:root[data-theme="dark"] .table-gold {
+    background: #1e1e1e;
+}
+
+:root[data-theme="dark"] .table-gold th {
+    background: linear-gradient(145deg, #2a220e, #362c12);
+}
+
+:root[data-theme="dark"] .table-gold td {
+    border-bottom: 1px solid #362c12;
+}
+
+:root[data-theme="dark"] .table-gold tbody tr:hover {
+    background-color: #252525;
+}
+
+:root[data-theme="dark"] .daily-card {
+    background: #1e1e1e;
+    border-color: #362c12;
+}
+
+:root[data-theme="dark"] .quran-input {
+    background: #1e1e1e;
+    border-color: #362c12;
+    color: var(--text-dark);
+}
+
+:root[data-theme="dark"] .quran-input:focus {
+    background-color: #252525;
+}
+
+:root[data-theme="dark"] .workout-note-input {
+    background: #1e1e1e !important;
+    border-color: #362c12 !important;
+    color: var(--text-dark) !important;
+}
+
+:root[data-theme="dark"] .lang-container select {
+    background: #1e1e1e;
+    color: var(--gold-secondary);
+}
+
+:root[data-theme="dark"] .modal-content {
+    background: #1e1e1e;
+}
+
+:root[data-theme="dark"] .certificate-banner {
+    background: linear-gradient(135deg, #443710 0%, #2a220e 100%);
+}
+
+:root[data-theme="dark"] .cert-banner-title,
+:root[data-theme="dark"] .cert-banner-desc,
+:root[data-theme="dark"] .cert-banner-stats {
+    color: #f0f0f0;
+}
+
+:root[data-theme="dark"] input#user-name {
+    background: linear-gradient(145deg, #362c12, #2a220e);
+    color: #f0f0f0;
+}
+
+@media (max-width: 768px) {
+    :root[data-theme="dark"] .table-gold tr {
+        background: #1e1e1e;
+        border-color: #362c12;
+    }
+    :root[data-theme="dark"] .table-gold td {
+        border-bottom-color: #2a220e;
+    }
+}

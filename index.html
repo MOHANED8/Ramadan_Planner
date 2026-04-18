@@ -64,6 +64,14 @@
                     📲 تثبيت التطبيق
                 </button>
 
+                <button id="theme-toggle-btn" class="btn-secondary" data-i18n="themeBtn">
+                    🌙 المظهر
+                </button>
+                
+                <button id="btn-data-modal" class="btn-secondary" data-i18n="dataModalBtn">
+                    💾 إدارة البيانات
+                </button>
+
                 <div id="location-status"></div>
             </div>
 
@@ -260,6 +268,25 @@
                     <span data-i18n="certClose">✖ إغلاق</span>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Data Management Modal -->
+    <div id="data-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="close-data-modal">&times;</span>
+            <h2 data-i18n="dataManagementHeader">💾 إدارة البيانات</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;" data-i18n="dataManagementDesc">
+                احفظ تقدمك الحالي أو استعد بياناتك السابقة بأمان.
+            </p>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button id="btn-export-data" class="btn-primary" data-i18n="exportBtn">📥 تحميل نسخة احتياطية</button>
+                <label for="import-file" class="btn-secondary" style="cursor: pointer; display: inline-block; padding: 10px 20px; border-radius: 20px; font-weight: bold; background: var(--gold-secondary); color: white; margin: 0; min-height: 44px; display: flex; align-items: center;">
+                    <span data-i18n="importBtn">📤 استعادة من ملف</span>
+                </label>
+                <input type="file" id="import-file" accept=".json" style="display: none;">
+            </div>
+            <p id="data-status-msg" style="margin-top: 15px; font-weight: bold; height: 1.5rem; color: var(--gold-primary);"></p>
         </div>
     </div>
 

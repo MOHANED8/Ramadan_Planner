@@ -55,6 +55,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentLang = SyncManager.get(STORAGE_KEY_LANG) || 'ar'; // Default Arabic
 
+    // --- 0.6 Theme Manager ---
+    const STORAGE_KEY_THEME = 'ramadan_planner_theme';
+    let currentTheme = SyncManager.get(STORAGE_KEY_THEME);
+    
+    if (!currentTheme) {
+        currentTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        SyncManager.save(STORAGE_KEY_THEME, theme);
+        currentTheme = theme;
+        
+        const themeBtn = document.getElementById('theme-toggle-btn');
+        if (themeBtn) {
+            themeBtn.innerHTML = theme === 'dark' ? '☀️ وضع النهار' : '🌙 وضع الليل';
+        }
+    }
+    applyTheme(currentTheme);
+
     function updateLanguage(lang) {
         currentLang = lang;
         SyncManager.save(STORAGE_KEY_LANG, lang);
@@ -586,6 +606,94 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         // Apply initial language (re-renders everything with correct language)
         updateLanguage(currentLang);
+    }
+
+    // --- Theme & Data Listeners ---
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        });
+    }
+
+    const dataModalBtn = document.getElementById('btn-data-modal');
+    const closeDataModal = document.getElementById('close-data-modal');
+    const dataModal = document.getElementById('data-modal');
+    
+    if (dataModalBtn && dataModal) {
+        dataModalBtn.addEventListener('click', () => dataModal.classList.remove('hidden'));
+    }
+    if (closeDataModal && dataModal) {
+        closeDataModal.addEventListener('click', () => dataModal.classList.add('hidden'));
+    }
+
+    // Export Data (Backup)
+    const exportBtn = document.getElementById('btn-export-data');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', () => {
+            const allData = {
+                lang: currentLang,
+                theme: currentTheme,
+                progress: SyncManager.get(STORAGE_KEY_PROGRESS),
+                quran: SyncManager.get('ramadan_planner_quran'),
+                certs: SyncManager.get(CERT_STORAGE_KEY),
+                name: SyncManager.get(STORAGE_KEY_NAME)
+            };
+            const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ramadan_planner_backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            const msg = document.getElementById('data-status-msg');
+            if (msg) {
+                msg.textContent = currentLang === 'ar' ? '✅ تم تحميل النسخة بنجاح!' : '✅ Backup downloaded!';
+                setTimeout(() => msg.textContent = '', 3000);
+            }
+        });
+    }
+
+    // Import Data (Restore)
+    const importFile = document.getElementById('import-file');
+    if (importFile) {
+        importFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    if (data.lang) SyncManager.save(STORAGE_KEY_LANG, data.lang);
+                    if (data.theme) SyncManager.save(STORAGE_KEY_THEME, data.theme);
+                    if (data.progress) SyncManager.save(STORAGE_KEY_PROGRESS, data.progress);
+                    if (data.quran) SyncManager.save('ramadan_planner_quran', data.quran);
+                    if (data.certs) SyncManager.save(CERT_STORAGE_KEY, data.certs);
+                    if (data.name) SyncManager.save(STORAGE_KEY_NAME, data.name);
+                    
+                    const msg = document.getElementById('data-status-msg');
+                    if (msg) {
+                        msg.style.color = 'var(--gold-primary)';
+                        msg.textContent = currentLang === 'ar' ? '✅ تم استعادة البيانات! جاري التحديث...' : '✅ Data restored! Refreshing...';
+                    }
+                    
+                    setTimeout(() => window.location.reload(), 1500);
+                } catch (err) {
+                    console.error('Import error', err);
+                    const msg = document.getElementById('data-status-msg');
+                    if (msg) {
+                        msg.style.color = 'red';
+                        msg.textContent = currentLang === 'ar' ? '❌ ملف غير صالح' : '❌ Invalid Backup File';
+                    }
+                }
+            };
+            reader.readAsText(file);
+        });
     }
 
     // ========================================
